@@ -1,0 +1,7 @@
+{
+  "name": "PetCuy",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
