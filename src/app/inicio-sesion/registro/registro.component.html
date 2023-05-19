@@ -1,0 +1,101 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <div id="container">
+    <div class="container">
+        <p>Ingrese sus datos<br>
+        <form (submit)="submitForm()" [formGroup]="registerForm">
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Rut</ion-label>
+            <ion-input type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9" (focus)="resetErrorVariable('rut')"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('rut')?.invalid && registerForm.get('rut')?.touched">
+            <div>{{ getErrorMessage('rut') }}</div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="rutPostError">
+            <div>{{ rutPostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input type="text" name="nombre" placeholder="Ingrese su nombre" formControlName="nombre" ngModel pattern="[a-zA-Z]*" (focus)="resetErrorVariable('nombre')"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched">
+            <div>{{ getErrorMessage('nombre') }}</div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="nombrePostError">
+            <div>{{ nombrePostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Apellido</ion-label>
+            <ion-input type="text" name="apellido" placeholder="Ingrese su apellido" formControlName="apellido" ngModel pattern="[a-zA-Z]*" (focus)="resetErrorVariable('apellido')"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched">
+            <div>{{ getErrorMessage('apellido') }}</div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="apellidoPostError">
+            <div>{{ apellidoPostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Correo</ion-label>
+            <ion-input type="text" name="email" placeholder="Ingrese su correo" formControlName="email" (focus)="resetErrorVariable('email')"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <div>{{ getErrorMessage('email') }}</div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="emailPostError">
+            <div>{{ emailPostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Celular</ion-label>
+            <ion-input type="text" name="celular" placeholder="912341234" formControlName="celular" minlength="9" maxlength="9" (focus)="resetErrorVariable('celular')"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('celular')?.invalid && registerForm.get('celular')?.touched">
+            <div><p>Número no valido</p></div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="celularPostError">
+            <div>{{ celularPostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="{{ showPassword1 ? 'text' : 'password' }}" name="password" placeholder="Ingrese su contraseña" maxlength="20" formControlName="password" ></ion-input>
+            <ion-icon
+            slot="end"
+            name="{{ showPassword1 ? 'eye-off' : 'eye' }}"
+            (click)="togglePasswordVisibility1()"
+          ></ion-icon>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <div>{{ getErrorMessage('password') }}</div>
+          </ion-text>
+          <ion-text color="danger" *ngIf="contrasenaPostError">
+            <div>{{ contrasenaPostError }}</div>
+          </ion-text>
+          <ion-item lines="full" *ngIf="registerForm">
+            <ion-label position="floating">Confirme su Contraseña</ion-label>
+            <ion-input type="{{ showPassword2 ? 'text' : 'password' }}" name="confirmPassword" placeholder="Confirme su contraseña" formControlName="confirmPassword"></ion-input>
+            <ion-icon
+            slot="end"
+            name="{{ showPassword2 ? 'eye-off' : 'eye' }}"
+            (click)="togglePasswordVisibility2()"
+          ></ion-icon>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.hasError('not_matching')">
+            <div>{{ getErrorMessage('confirmPassword') }}</div>
+          </ion-text>
+        <ion-row>
+          <ion-col>
+            <ion-button type="submit" [disabled]="registerForm.invalid || rutPostError || nombrePostError || apellidoPostError || emailPostError || celularPostError || contrasenaPostError">Enviar</ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </div>
+  </div>
+</ion-content>

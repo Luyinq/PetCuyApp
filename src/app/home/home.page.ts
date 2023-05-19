@@ -1,8 +1,7 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
-
-
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-home',
@@ -10,25 +9,30 @@ import { Geolocation } from '@capacitor/geolocation';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
   markerId!: string;
-
-  constructor() {}
-
-  ngOnInit() {}
+  hasMarker: boolean = false;
+  position = {
+    latitude : 0,
+    longitude : 0
+  }
   
 
+  constructor(private cdr: ChangeDetectorRef, private main: AppComponent) {
+    const nombre = localStorage.getItem('nombre');
+    this.main.nombre = nombre !== null ? nombre : '';
+  }
+
+  ngOnInit() {}
 
   ionViewDidEnter() {
-    console.log("A inicializar el mapa")
     this.createMap();
   }
 
-  async getCurrentPosition(){
-    const currentPosition = await Geolocation.getCurrentPosition()
+  async getCurrentPosition() {
+    const currentPosition = await Geolocation.getCurrentPosition();
     const center = {
       lat: currentPosition.coords.latitude,
       lng: currentPosition.coords.longitude,
@@ -39,7 +43,7 @@ export class HomePage {
   async createMap() {
     const center = await this.getCurrentPosition();
     this.newMap = await GoogleMap.create({
-      id: 'home-goole-map',
+      id: 'home-google-map',
       element: this.mapRef.nativeElement,
       apiKey: "AIzaSyBH7CLio51Cdf9MYSdDPk0NEu2h07ByGHM",
       config: {
@@ -52,38 +56,50 @@ export class HomePage {
     await this.newMap.enableCurrentLocation(true);
   }
 
-  async addMarker(lat: number, lng: number){
+  async addMarker(lat: number, lng: number) {
+    if (this.markerId) {
+      await this.removeMarker();
+    }
     this.markerId = await this.newMap.addMarker({
       coordinate: {
         lat: lat,
         lng: lng,
       },
       draggable: false
-    })
+    });
+    this.hasMarker = true;
+    console.log(this.position)
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 
-  async addListeners(){
-
+  async addListeners() {
     await this.newMap.setOnMapClickListener((event) => {
       console.log('setOnMapClickListener', event);
       this.addMarker(event.latitude, event.longitude);
-    })
+      this.position = {
+        latitude : event.latitude,
+        longitude : event.longitude
+      }
+    });
 
     await this.newMap.setOnMarkerClickListener((event) => {
       console.log('setOnMarkerClickListener', event);
-      this.removeMarker(event.markerId);
-    })
+      this.removeMarker();
+    });
 
     await this.newMap.setOnMyLocationClickListener((event) => {
       console.log('setOnMyLocationClickListener', event);
       this.addMarker(event.latitude, event.longitude);
-    })
+    });
   }
 
-  async removeMarker(id?: string) {
-    await this.newMap.removeMarker(id ? id : this.markerId);
+  async removeMarker() {
+    if (this.markerId) {
+      await this.newMap.removeMarker(this.markerId);
+      this.markerId = '';
+      this.hasMarker = false;
+      this.cdr.detectChanges(); // Manually trigger change detection
+    }
   }
-
   
-
 }
