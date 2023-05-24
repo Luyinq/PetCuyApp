@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Perfil del usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="usuario" class="user-profile-card">
+    <ion-card-header>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="profile-picture">
+        <ion-avatar class="avatar-circle">
+          <ion-img [src]="usuario.foto" alt="Foto de perfil" *ngIf="usuario.foto; else defaultProfile"></ion-img>
+        </ion-avatar>
+      </div>
+      <ng-template #defaultProfile>
+        <ion-avatar class="avatar-circle">
+          <ion-img src="assets/imagenes/profileNotFound.jpg" alt="Foto de perfil por defecto"></ion-img>
+        </ion-avatar>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="usuario" class="user-info-card">
+    <ion-card-header class="ion-text-center">
+      <ion-card-title>Información del usuario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Nombre:</ion-label>
+        <ion-note slot="end">{{ usuario.nombre }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Apellido:</ion-label>
+        <ion-note slot="end">{{ usuario.apellido }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Celular:</ion-label>
+        <ion-note slot="end">+56{{ usuario.celular }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Correo:</ion-label>
+        <ion-note slot="end">{{ usuario.correo }}</ion-note>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="no-user-data" *ngIf="!usuario">
+    <ion-card>
+      <ion-card-content>
+        <p>No se encontraron datos del usuario</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-footer *ngIf="usuario">
+    <ion-toolbar>
+      <ion-button expand="full" href="https://wa.me/+56{{usuario.celular}}?text=¡Hola! Te hablo desde PetCuy." class="whatsapp-button" *ngIf="usuario.celular.toString() !== storedCelular">
+        <ion-icon slot="icon-only" name="logo-whatsapp" class="whatsapp-icon"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+  
+  <ion-footer *ngIf="usuario">
+    <ion-toolbar>
+      <ion-button expand="full" href="mailto:{{usuario.correo}}?subject=Asunto del correo&body=¡Hola! Te escribo desde PetCuy." class="email-button" *ngIf="usuario.correo !== storedCorreo">
+        <ion-icon slot="icon-only" name="mail" class="email-icon"></ion-icon>
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
