@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="updateForm" (ngSubmit)="submitForm()">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input formControlName="nombre" required></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="updateForm.get('nombre')?.invalid && updateForm.get('nombre')?.touched">
+      <div>{{ getErrorMessage('nombre') }}</div>
+    </ion-text>
+    <ion-text color="danger" *ngIf="nombrePutError">
+      <div>{{ nombrePutError }}</div>
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Apellido</ion-label>
+      <ion-input formControlName="apellido" required></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="updateForm.get('apellido')?.invalid && updateForm.get('apellido')?.touched">
+      <div>{{ getErrorMessage('apellido') }}</div>
+    </ion-text>
+    <ion-text color="danger" *ngIf="apellidoPutError">
+      <div>{{ apellidoPutError }}</div>
+    </ion-text>
+    
+    <ion-item>
+      <ion-label position="floating">Correo</ion-label>
+      <ion-input type="email" formControlName="correo" required></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="updateForm.get('correo')?.invalid && updateForm.get('correo')?.touched">
+      <div>{{ getErrorMessage('correo') }}</div>
+    </ion-text>
+    <ion-text color="danger" *ngIf="correoPutError">
+      <div>{{ correoPutError }}</div>
+    </ion-text>
+
+    <ion-item>
+      <ion-label position="floating">Celular</ion-label>
+      <ion-input type="number" formControlName="celular"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="updateForm.get('celular')?.invalid && updateForm.get('celular')?.touched">
+      <div>{{ getErrorMessage('celular') }}</div>
+    </ion-text>
+    <ion-text color="danger" *ngIf="celularPutError">
+      <div>{{ celularPutError }}</div>
+    </ion-text>
+
+
+
+    <ion-button type="submit" expand="block" [disabled]="updateForm.invalid">
+      Guardar cambios
+    </ion-button>
+  </form>
+</ion-content>

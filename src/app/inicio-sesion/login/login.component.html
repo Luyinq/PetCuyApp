@@ -18,7 +18,7 @@
     <ion-item lines="full" *ngIf="forgotForm">
       <ion-label position="floating">Contraseña</ion-label>
       <ion-input type="{{ showPassword ? 'text' : 'password' }}" name="password" maxlength="20" formControlName="password" required></ion-input>
-      <ion-icon
+      <ion-icon id="passwordEye"
       slot="end"
       name="{{ showPassword ? 'eye-off' : 'eye' }}"
       (click)="togglePasswordVisibility()"

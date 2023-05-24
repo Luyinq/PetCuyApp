@@ -4,7 +4,7 @@ import { AlertController  } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AppComponent } from '../../app.component';
-
+import { ApiService } from 'src/app/shared/api.service';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +44,7 @@ export class LoginComponent  implements OnInit {
     return '';
   }
 
-  constructor(private router: Router, public alertController:AlertController, public formBuilder:FormBuilder, private http: HttpClient, private main: AppComponent) {}
+  constructor(private router: Router, private api : ApiService, public alertController:AlertController, public formBuilder:FormBuilder, private http: HttpClient, private main: AppComponent) {}
 
   ngOnInit() {
   }
@@ -71,15 +71,15 @@ export class LoginComponent  implements OnInit {
               localStorage.setItem('isActive', response.data.usuario.isActive)
               localStorage.setItem('isAdmin', response.data.usuario.isAdmin)
               localStorage.setItem('token', response.data.tokens[0].key);
-              this.presentAlert("Felicitaciones", response.message);
+              this.api.presentToast(response.message);
               this.main.showMenu = true;
+              this.main.ngOnInit();
               this.router.navigate(['/home']);
             } else {
-              this.presentAlert("Error", response.message);
+              this.api.presentToast(response.message);
             }
           }, (error: any) => {
-            console.error(error);
-            this.presentAlert("Error", error.error.message);
+            this.api.presentToast(error.error.message);
           });
       }
     } else {

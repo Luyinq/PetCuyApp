@@ -15,7 +15,7 @@ import { FormGroupDirective } from '@angular/forms'; // Import FormGroupDirectiv
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
   providers: [FormGroupDirective], // Add FormGroupDirective to providers
 })

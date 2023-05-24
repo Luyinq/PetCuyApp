@@ -1,3 +1,2 @@
-
-<capacitor-google-map #map></capacitor-google-map>
+<capacitor-google-map #map *ngIf="isHomePage" [fullscreen]="true"></capacitor-google-map>
 <ion-button *ngIf="hasMarker" expand="full">Crear anuncio aquí</ion-button>
