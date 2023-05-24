@@ -1,14 +1,16 @@
-import { Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
 import { AppComponent } from '../app.component';
+import { NavigationEnd, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements AfterViewInit, OnDestroy {
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
@@ -18,17 +20,54 @@ export class HomePage {
     latitude : 0,
     longitude : 0
   }
-  
+  private routerSubscription: any;
+  isHomePage: boolean = false;
 
-  constructor(private cdr: ChangeDetectorRef, private main: AppComponent) {
+
+  constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router) {
     const nombre = localStorage.getItem('nombre');
     this.main.nombre = nombre !== null ? nombre : '';
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.subscribeToRouterEvents();
+  }
 
-  ionViewDidEnter() {
-    this.createMap();
+  ngAfterViewInit() {
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeFromRouterEvents();
+  }
+
+  subscribeToRouterEvents() {
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isHomePage = (event.urlAfterRedirects === '/home');
+        if (!this.isHomePage) {
+          this.destroyMap(); // Destroy the map when navigating to another component
+        } else {
+          this.cdr.detectChanges(); // Manually trigger change detection
+          this.createMap(); // Recreate the map when navigating back to the page
+        }
+      }
+    });
+  }
+  
+
+  unsubscribeFromRouterEvents() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  destroyMap() {
+    console.log("borrando");
+    this.newMap.destroy();
+    this.newMap.removeAllMapListeners(); // Agrega paréntesis aquí
+    this.hasMarker = false;
+    this.markerId = "";
+    this.cdr.detectChanges(); // Manually trigger change detection
   }
 
   async getCurrentPosition() {
