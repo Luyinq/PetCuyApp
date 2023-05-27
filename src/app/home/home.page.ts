@@ -3,6 +3,9 @@ import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
 import { AppComponent } from '../app.component';
 import { NavigationEnd, Router } from '@angular/router';
+import { environment } from '../../environments/environment.prod';
+import { ApiService } from '../shared/api.service';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -17,14 +20,19 @@ export class HomePage implements AfterViewInit, OnDestroy {
   markerId!: string;
   hasMarker: boolean = false;
   position = {
-    latitude : 0,
-    longitude : 0
+    latitude: 0,
+    longitude: 0
   }
   private routerSubscription: any;
   isHomePage: boolean = false;
+  markerPopup: any;
+  allmarkersInfo: {
+    id : number;
+    nombre : string;
+  } [] = [];
 
 
-  constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router) {
+  constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
     const nombre = localStorage.getItem('nombre');
     this.main.nombre = nombre !== null ? nombre : '';
   }
@@ -53,7 +61,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       }
     });
   }
-  
+
 
   unsubscribeFromRouterEvents() {
     if (this.routerSubscription) {
@@ -84,7 +92,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.newMap = await GoogleMap.create({
       id: 'home-google-map',
       element: this.mapRef.nativeElement,
-      apiKey: "AIzaSyBH7CLio51Cdf9MYSdDPk0NEu2h07ByGHM",
+      apiKey: environment.googleMap.apiKey,
       config: {
         center: center,
         zoom: 20,
@@ -93,6 +101,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.addListeners();
     await this.newMap.enableTrafficLayer(true);
     await this.newMap.enableCurrentLocation(true);
+    await this.insertMarkersFromAPI(); // Insertar marcadores desde la API
   }
 
   async addMarker(lat: number, lng: number) {
@@ -116,20 +125,35 @@ export class HomePage implements AfterViewInit, OnDestroy {
       console.log('setOnMapClickListener', event);
       this.addMarker(event.latitude, event.longitude);
       this.position = {
-        latitude : event.latitude,
-        longitude : event.longitude
+        latitude: event.latitude,
+        longitude: event.longitude
       }
     });
 
-    await this.newMap.setOnMarkerClickListener((event) => {
+    await this.newMap.setOnMarkerClickListener(async (event) => {
       console.log('setOnMarkerClickListener', event);
-      this.removeMarker();
+      // Buscar en allmarkersInfo si hay un objeto con el mismo id que event.title
+      const markerInfo = this.allmarkersInfo.find(marker => marker.id.toString() === event.title);
+      if (markerInfo) {
+        // Si se encuentra una coincidencia, mostrar el nombre del marcador
+        await this.showMarkerPopup(markerInfo.nombre);
+      }
     });
 
     await this.newMap.setOnMyLocationClickListener((event) => {
       console.log('setOnMyLocationClickListener', event);
       this.addMarker(event.latitude, event.longitude);
     });
+  }
+
+  async showMarkerPopup(title: string) {
+    const alert = await this.alertController.create({
+      header: 'Marker Clicked',
+      message: `You clicked on marker: ${title}`,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   async removeMarker() {
@@ -140,5 +164,41 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.cdr.detectChanges(); // Manually trigger change detection
     }
   }
-  
+
+  async insertMarkersFromAPI() {
+    // Aquí debes realizar la llamada a la API para obtener los marcadores
+    const markers = await this.api.getAnuncios(); // Reemplaza "tuApiObtenerMarcadores" con la llamada a tu API
+    // Recorre los marcadores obtenidos y añádelos al mapa
+    markers.forEach(async (marker) => {
+      const lat = parseFloat(marker.posicion[0].latitud);
+      const lng = parseFloat(marker.posicion[0].longitud);
+      // Añade el marcador al array
+      this.allmarkersInfo.push({
+        id : marker.id,
+        nombre : marker.mascota.nombre
+      });
+
+      await this.newMap.addMarker({
+        coordinate: {
+          lat: lat,
+          lng: lng,
+        },
+        draggable: false,
+        title: marker.id.toString(),
+        iconUrl: marker.mascota.foto_1,
+        iconSize: {
+          width: 100,
+          height: 100
+        }
+      });
+      console.log(marker.posicion[0].longitud)
+    });
+    console.log(markers)
+    console.log(this.allmarkersInfo)
+
+  }
+
+
+
+
 }
