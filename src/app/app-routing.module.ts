@@ -7,6 +7,7 @@ import { CambiarContrasenaComponent } from './menu/cambiar-contrasena/cambiar-co
 import { EditarPerfilComponent } from './menu/editar-perfil/editar-perfil.component';
 import { MisMascotasComponent } from './menu/mis-mascotas/mis-mascotas.component';
 import { VerPerfilComponent } from './menu/ver-perfil/ver-perfil.component';
+import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
 
@@ -49,6 +50,16 @@ const routes: Routes = [
   {
     path: 'perfil',
     component: VerPerfilComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form',
+    component: MascotaFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form/:isEdit/:petId',
+    component: MascotaFormComponent,
     canActivate: [AuthGuardGuard]
   },
   {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/shared/api.service';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mis-mascotas',
@@ -10,7 +11,7 @@ import { AlertController } from '@ionic/angular';
 export class MisMascotasComponent implements OnInit {
   pets!: any[]; // Define the property to hold pet data
 
-  constructor(private api: ApiService, private alertController: AlertController) {}
+  constructor(private api: ApiService, private alertController: AlertController, private router : Router) {}
 
   ngOnInit() {}
 
@@ -61,5 +62,10 @@ export class MisMascotasComponent implements OnInit {
     await alert.present();
   }
 
+
+  mascotaForm(source: string, petId?: number) {
+    const isEdit = (source === 'Editar');
+    this.router.navigate(['/mascota-form', { isEdit: isEdit, petId: petId}]);
+  }
 
 }

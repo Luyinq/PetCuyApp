@@ -139,7 +139,7 @@ export class ApiService {
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-  
+
       this.http.get<any[]>(url, { headers }).subscribe(
         (response: any[]) => {
           // Obtener los nombres de tipo de mascota
@@ -150,7 +150,7 @@ export class ApiService {
                 const tipo = tipoMascotas.find((tipoMascota) => tipoMascota.id === mascota.tipo);
                 mascota.tipo = tipo ? tipo.nombre : 'Desconocido';
               });
-  
+
               resolve(response);
             },
             (error) => {
@@ -165,13 +165,31 @@ export class ApiService {
     });
   }
 
+  getPet(petId: number): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/mascota/${petId}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+
+      this.http.get<any>(url, { headers }).subscribe(
+        (response: any) => {
+          resolve(response)
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   deletePet(petId: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const url = `https://luyinq.pythonanywhere.com/mascota/${petId}/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-  
+
       this.http.delete(url, { headers }).subscribe(
         () => {
           resolve(); // Resolve the promise on successful deletion
@@ -182,29 +200,29 @@ export class ApiService {
       );
     });
   }
-  
-  
+
+
   async getAnuncios(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
       const url = `https://luyinq.pythonanywhere.com/anuncio/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-  
+
       this.http.get<any[]>(url, { headers }).subscribe(
         async (response: any[]) => {
           const anunciosWithPosicion: any[] = [];
-  
+
           for (const anuncio of response) {
             const posicion = await this.http.get<any>('https://luyinq.pythonanywhere.com/posicion/?anuncio=' + anuncio.id, { headers }).toPromise();
             const mascota = await this.http.get<any>('https://luyinq.pythonanywhere.com/mascota/' + anuncio.mascota + '/', { headers }).toPromise();
-  
+
             anuncio.posicion = posicion; // Obtener el primer elemento del array de posiciones
             anuncio.mascota = mascota; // Agregar la propiedad "mascotaInfo" al anuncio y asignarle la información de la mascota
-  
+
             anunciosWithPosicion.push(anuncio);
           }
-  
+
           resolve(anunciosWithPosicion);
         },
         (error) => {
@@ -213,10 +231,10 @@ export class ApiService {
       );
     });
   }
-  
-  
-  
-  
+
+
+
+
 
 
 }

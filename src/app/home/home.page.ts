@@ -27,9 +27,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
   isHomePage: boolean = false;
   markerPopup: any;
   allmarkersInfo: {
-    id : number;
-    nombre : string;
-  } [] = [];
+    id: number;
+    nombre: string;
+  }[] = [];
 
 
   constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
@@ -116,7 +116,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
       draggable: false
     });
     this.hasMarker = true;
-    console.log(this.position)
     this.cdr.detectChanges(); // Manually trigger change detection
   }
 
@@ -132,6 +131,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     await this.newMap.setOnMarkerClickListener(async (event) => {
       console.log('setOnMarkerClickListener', event);
+      await this.removeMarker();
       // Buscar en allmarkersInfo si hay un objeto con el mismo id que event.title
       const markerInfo = this.allmarkersInfo.find(marker => marker.id.toString() === event.title);
       if (markerInfo) {
@@ -174,8 +174,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
       const lng = parseFloat(marker.posicion[0].longitud);
       // Añade el marcador al array
       this.allmarkersInfo.push({
-        id : marker.id,
-        nombre : marker.mascota.nombre
+        id: marker.id,
+        nombre: marker.mascota.nombre
       });
 
       await this.newMap.addMarker({
