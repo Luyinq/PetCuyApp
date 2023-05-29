@@ -5,7 +5,9 @@ import { OlvideContrasenaComponent } from './inicio-sesion/olvide-contrasena/olv
 import { RegistroComponent } from './inicio-sesion/registro/registro.component';
 import { CambiarContrasenaComponent } from './menu/cambiar-contrasena/cambiar-contrasena.component';
 import { EditarPerfilComponent } from './menu/editar-perfil/editar-perfil.component';
+import { MisMascotasComponent } from './menu/mis-mascotas/mis-mascotas.component';
 import { VerPerfilComponent } from './menu/ver-perfil/ver-perfil.component';
+import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
 
@@ -41,8 +43,23 @@ const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'mis-mascotas',
+    component: MisMascotasComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
     path: 'perfil',
     component: VerPerfilComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form',
+    component: MascotaFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form/:isEdit/:petId',
+    component: MascotaFormComponent,
     canActivate: [AuthGuardGuard]
   },
   {

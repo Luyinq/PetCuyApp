@@ -88,11 +88,7 @@ export class AppComponent implements OnInit {
     this.apiService.rut = this.localStorage?.getItem('rut') || '';
     this.router.navigate(['/perfil']);
   }
-
-  gotoOtherProfile() {
-    this.apiService.rut = "222222222";
-    this.router.navigate(['/perfil']);
-  }
+  
 
 }
 

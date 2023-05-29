@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Formulario Mascota</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="mascotaForm" (ngSubmit)="guardarMascota()" novalidate>
+    <ion-item>
+      <ion-input formControlName="nombre" placeholder="Nombre"></ion-input>
+    </ion-item>
+    <ion-text color="danger" *ngIf="mascotaForm.get('nombre')?.invalid && mascotaForm.get('nombre')?.touched">
+      <div>{{ getErrorMessage('nombre') }}</div>
+    </ion-text>
+    <ion-item>
+      <input formControlName="fotos" type="file" (input)="onFotosSelected($event)" multiple accept="image/*"
+        class="hide-file-input" #fileInput>
+      <ion-button expand="full" (click)="fileInput.click()" class="file-input-button">
+        Seleccionar fotos
+      </ion-button>
+    </ion-item>
+    <ion-text color="danger" *ngIf="mascotaForm.get('fotos')?.invalid && mascotaForm.get('fotos')?.touched">
+      <div>{{ getErrorMessage('fotos') }}</div>
+    </ion-text>
+    <ion-item *ngIf="fotos.length > 0 && fotos.length <= 2">
+      <ion-label>Fotos seleccionadas:</ion-label>
+      <ion-list lines="none">
+        <ion-item *ngFor="let foto of fotos">
+          {{ foto.name }}
+        </ion-item>
+      </ion-list>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tipo de mascota</ion-label>
+      <ion-select formControlName="tipoMascota">
+        <ion-select-option *ngFor="let option of tipoMascotaOptions" [value]="option.id">{{ option.nombre }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-text color="danger" *ngIf="mascotaForm.get('tipoMascota')?.invalid && mascotaForm.get('tipoMascota')?.touched">
+      <div>{{ getErrorMessage('tipoMascota') }}</div>
+    </ion-text>
+    
+    <ion-button expand="full" type="submit" [disabled]="!mascotaForm.valid || fotos.length === 0 || fotos.length > 2">
+      {{ isEdit ? 'Guardar cambios' : 'Crear mascota' }}
+    </ion-button>
+  </form>
+</ion-content>
