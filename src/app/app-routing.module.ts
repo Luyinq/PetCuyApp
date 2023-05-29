@@ -8,6 +8,7 @@ import { EditarPerfilComponent } from './menu/editar-perfil/editar-perfil.compon
 import { VerPerfilComponent } from './menu/ver-perfil/ver-perfil.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+import { AdmincrudComponent } from './admincrud/admincrud.component'
 
 const routes: Routes = [
   {
@@ -43,6 +44,11 @@ const routes: Routes = [
   {
     path: 'perfil',
     component: VerPerfilComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'admin/:entidad',
+    component: AdmincrudComponent,
     canActivate: [AuthGuardGuard]
   },
   {

@@ -7,7 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { SHA1 } from 'crypto-js';
 import { ToastController } from '@ionic/angular';
-
+import { Observable } from 'rxjs';
 
 @NgModule({
   imports: [
@@ -133,5 +133,10 @@ export class ApiService {
     return signature;
   }
 
+  getUrlData(getUrl: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/${getUrl}`;
 
+    return this.http.get(url);
+  }
 }
