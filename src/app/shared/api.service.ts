@@ -135,8 +135,12 @@ export class ApiService {
 
   getUrlData(getUrl: string): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
-    const url = `${baseUrl}/${getUrl}`;
-
-    return this.http.get(url);
+    const url = `${baseUrl}/${getUrl}/`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    console.log()
+    return this.http.get(url,{headers});
   }
 }
