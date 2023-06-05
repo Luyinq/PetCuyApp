@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../shared/api.service';
 import { ActivatedRoute } from '@angular/router';
+
+
 @Component({
   selector: 'app-admincrud',
   templateUrl: './admincrud.component.html',
   styleUrls: ['./admincrud.component.scss'],
 })
 export class AdmincrudComponent  implements OnInit {
-
   datos: any[] =[];
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) { }
@@ -22,14 +23,21 @@ export class AdmincrudComponent  implements OnInit {
   obtenerDatosEntidad(entidad: string) {
     this.apiService.getUrlData(entidad).subscribe((response: any) => {
       this.datos = Object.entries(response).map(([key, value]) => value);
+      console.log(this.datos)
     });
   }
+  esAdminUsuarioURL(): boolean {
+    return window.location.href.includes('/admin/usuario');
+  }
+  esAdminTipo_mascotaURL(): boolean {
+    return window.location.href.includes('/admin/tipo_mascota');
+  }
   
-  eliminar(id: number) {
+  eliminarUsuario(entidad:string) {
     // Lógica para eliminar la entidad con el ID proporcionado
   }
 
-  modificar(id: number) {
+  editarUsuario(entidad: string) {
     // Lógica para modificar la entidad con el ID proporcionado
   }
 

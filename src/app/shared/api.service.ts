@@ -140,7 +140,17 @@ export class ApiService {
       'Content-Type': 'application/json',
       'Authorization': 'Token ' + localStorage.getItem('token')
     });
-    console.log()
-    return this.http.get(url,{headers});
+    console.log('todobien')
+    return new Observable<any>((observer) => {
+      this.http.get(url, { headers }).subscribe(
+        (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        (error) => {
+          observer.error(error);
+        }
+      );
+    });
   }
 }
