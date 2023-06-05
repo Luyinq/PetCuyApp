@@ -33,9 +33,23 @@ export class AdmincrudComponent  implements OnInit {
     return window.location.href.includes('/admin/tipo_mascota');
   }
   
-  eliminarUsuario(entidad:string) {
-    // Lógica para eliminar la entidad con el ID proporcionado
+  eliminarUsuario(entidad: any) {
+    const rut = entidad.rut; // Obtén el rut del objeto 'entidad'
+    this.apiService.eliminarUsuario(rut).subscribe(
+      () => {
+        // Eliminación exitosa
+        
+        console.log('Usuario eliminado');
+        this.obtenerDatosEntidad('usuario');
+      },
+      (error) => {
+        // Error al eliminar el usuario
+        console.error(error);
+      }
+    );
   }
+  
+  
 
   editarUsuario(entidad: string) {
     // Lógica para modificar la entidad con el ID proporcionado

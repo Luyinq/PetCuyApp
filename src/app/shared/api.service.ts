@@ -136,6 +136,7 @@ export class ApiService {
   getUrlData(getUrl: string): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
     const url = `${baseUrl}/${getUrl}/`;
+
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Token ' + localStorage.getItem('token')
@@ -152,5 +153,15 @@ export class ApiService {
         }
       );
     });
+  }
+  eliminarUsuario(rut: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com/usuario';
+    const url = `${baseUrl}/${rut}/`; // Agrega el rut en la URL para eliminar el usuario
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+  
+    return this.http.delete(url, { headers });
   }
 }
