@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Route } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { ApiService } from 'src/app/shared/api.service';
+import { environment } from 'src/environments/environment.prod';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -16,7 +18,7 @@ export class MascotaFormComponent implements OnInit {
   tipoMascotaOptions: any[] = [];
 
   mascotaForm = new FormGroup({
-    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    nombre: new FormControl('', [Validators.required, Validators.minLength(3), onlyLettersValidator()]),
     fotos: new FormControl('', [Validators.required]),
     tipoMascota: new FormControl('', [Validators.required])
   });
@@ -29,10 +31,13 @@ export class MascotaFormComponent implements OnInit {
     if (control?.hasError('minlength')) {
       return `El campo debe tener al menos ${control?.errors?.['minlength']?.requiredLength} carácteres.`;
     }
+    if (control?.hasError('onlyLetters')) {
+      return `El campo solo debe contener letras.`;
+    }
     return '';
   }
 
-  constructor(private api : ApiService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private api : ApiService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute, private router : Router) {
     this.isEdit = false;
   }
 
@@ -71,38 +76,85 @@ export class MascotaFormComponent implements OnInit {
     }
   }
 
-  guardarMascota() {
+  async guardarMascota() {
     if (this.mascotaForm.valid && this.fotos.length > 0 && this.fotos.length <= 2) {
-      const mascota = {
-        nombre: this.mascotaForm.value.nombre,
-        foto_1: this.fotos[0],
-        foto_2: this.fotos[1],
-        tipoMascota: this.mascotaForm.value.tipoMascota
+      const mascota: Record<string, any> = {
+        nombre: this.mascotaForm.value.nombre ?? '',
+        tipo: Number(this.mascotaForm.value.tipoMascota) ?? 0,
+        dueno: localStorage.getItem('rut'),
+        foto_1: 'a',
+        foto_2: ''
       };
-
-      if (this.isEdit) {
-        // Realizar una solicitud PUT al servidor para actualizar la mascota existente
-        const petIdParam = this.route.snapshot.paramMap.get('petId');
-        this.http.put(`https://luyinq.pythonanywhere.com/mascota/${petIdParam}` + '/', mascota)
-          .subscribe(response => {
-            // Lógica adicional después de la actualización exitosa
-          }, error => {
-            // Lógica para manejar el error en caso de fallar la actualización
-          });
-      } else {
-        // Realizar una solicitud POST al servidor para crear una nueva mascota
-        this.http.post('https://luyinq.pythonanywhere.com/mascota/', mascota)
-          .subscribe(response => {
-            // Lógica adicional después de la creación exitosa
-          }, error => {
-            // Lógica para manejar el error en caso de fallar la creación
-          });
+  
+      const headers = this.api.getAuthorization();
+      headers.append('Content-Type', 'application/json');
+  
+      try {
+        // Disable the button
+        const button = document.getElementById('guardar-button');
+        if (button) {
+          button.setAttribute('disabled', 'disabled');
+        }
+  
+        if (this.isEdit) {
+          const petIdParam = this.route.snapshot.paramMap.get('petId');
+          const response: any = await this.http.put(`https://luyinq.pythonanywhere.com/mascota/${petIdParam}/`, mascota, { headers }).toPromise();
+          this.api.presentToast(response.message);
+          await this.uploadPhotos(Number(petIdParam), mascota);
+        } else {
+          const response: any = await this.http.post('https://luyinq.pythonanywhere.com/mascota/', mascota, { headers }).toPromise();
+          this.api.presentToast(response.message);
+          const mascotaId = response.data.id;
+          await this.uploadPhotos(mascotaId, mascota);
+        }
+  
+        this.router.navigate(['/mis-mascotas']);
+      } catch (error: any) {
+        console.log(error);
+        this.api.presentToast(error.message);
+      } finally {
+        // Enable the button
+        const button = document.getElementById('guardar-button');
+        if (button) {
+          button.removeAttribute('disabled');
+        }
       }
     } else {
-      // Formulario inválido o número incorrecto de fotos seleccionadas
-      // Puedes mostrar un mensaje de error o realizar la lógica adecuada aquí
+      this.api.presentToast("Existe un error en el formulario");
     }
   }
+  
+  private async uploadPhotos(id: number, mascota: Record<string, any>): Promise<void> {
+    const foto1Promise: Promise<string> = this.api.uploadImage(this.fotos[0], `${id}-foto_1`, environment.cloudify.presetMascotas);
+    const foto2Promise: Promise<string> | null = this.fotos[1] ? this.api.uploadImage(this.fotos[1], `${id}-foto_2`, environment.cloudify.presetMascotas) : null;
+  
+    try {
+      const [url1, url2] = await Promise.all([foto1Promise, foto2Promise]);
+  
+      mascota['foto_1'] = url1;
+  
+      if (url2) {
+        mascota['foto_2'] = url2;
+      }
+  
+      const headers = this.api.getAuthorization();
+      headers.append('Content-Type', 'application/json');
+  
+      const response: any = await this.http.put(`https://luyinq.pythonanywhere.com/mascota/${id}/`, mascota, { headers }).toPromise();
+  
+      if (response.success) {
+        this.router.navigate(['/mis-mascotas']);
+      }
+    } catch (error: any) {
+      console.error(error);
+      this.api.presentToast(error.message);
+    }
+  }
+  
+  
+  
+  
+  
 
 
   fetchTipoMascotaOptions() {
@@ -119,4 +171,17 @@ export class MascotaFormComponent implements OnInit {
         }
       );
   }
+}
+
+function onlyLettersValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    const onlyLettersRegex = /^[A-Za-z]+$/; // Regex to match only letters
+
+    if (value && !onlyLettersRegex.test(value)) {
+      return { onlyLetters: true }; // Validation failed
+    }
+
+    return null; // Validation passed
+  };
 }

@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Anuncio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-card *ngIf="anuncioData">
+  <ion-card-header>
+    Anuncio ID: {{ anuncioData.id }}
+  </ion-card-header>
+  <ion-card-content>
+    <ion-item>
+      <img src="{{ anuncioData.mascota.foto_1 }}">
+    </ion-item>
+    <ion-item>
+      <ion-label>Autor</ion-label>
+      <ion-text>{{ anuncioData.autor }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Descripción</ion-label>
+      <ion-text>{{ anuncioData.descripcion }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-text>{{ anuncioData.fecha }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Estado</ion-label>
+      <ion-text>{{ anuncioData.estado }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Mascota</ion-label>
+      <ion-text>{{ anuncioData.mascota.nombre }}</ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Dueño de la mascota</ion-label>
+      <ion-text>{{ anuncioData.mascota.dueno }}</ion-text>
+    </ion-item>
+    <!-- Puedes mostrar otros campos aquí -->
+  </ion-card-content>
+</ion-card>
+<ion-card *ngIf="!anuncioData">
+<ion-text class="no-anuncio-text">No se encontró el anuncio</ion-text>
+</ion-card>
+</ion-content>

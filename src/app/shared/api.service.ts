@@ -7,6 +7,7 @@ import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment.prod';
 import { SHA1 } from 'crypto-js';
 import { ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 
 @NgModule({
@@ -36,6 +37,15 @@ export class ApiService {
     toast.present();
   }
 
+  getAuthorization(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${token}`
+    });
+
+    return headers;
+  }
+
   getUserData(updateForm: FormGroup) {
     const url = `https://luyinq.pythonanywhere.com/usuario/` + localStorage.getItem('rut') + '/';
     const headers = new HttpHeaders({
@@ -59,14 +69,14 @@ export class ApiService {
     });
   }
 
-  uploadImage(file: File, publicId: string): Promise<string> {
+  uploadImage(file: File, publicId: string, uploadPreset: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const timestamp = Date.now().toString();
-      const signature = this.createSignature(publicId, timestamp);
+      const signature = this.createSignature(publicId, timestamp, uploadPreset);
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('upload_preset', environment.cloudify.presetProfilePic);
+      formData.append('upload_preset', uploadPreset);
       formData.append('timestamp', timestamp);
       formData.append('public_id', publicId);
       formData.append('api_key', environment.cloudify.apiKey);
@@ -107,13 +117,13 @@ export class ApiService {
     });
   }
 
-  createSignature(publicId: string, timestamp: string): string {
+  createSignature(publicId: string, timestamp: string, uploadPreset: string): string {
     const apiSecret = environment.cloudify.apiSecret;
 
     const parameters: Record<string, string> = {
       public_id: publicId,
       timestamp,
-      upload_preset: 'profile_auth',
+      upload_preset: uploadPreset,
     };
 
     const sortedParameters = Object.entries(parameters)
@@ -165,6 +175,44 @@ export class ApiService {
     });
   }
 
+  listPets(): Promise<any[]> {
+    return new Promise<any[]>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=` + localStorage.getItem('rut') + '/';
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+
+      this.http.get<any[]>(url, { headers }).subscribe(
+        (response: any[]) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    },
+    );
+  }
+
+  listTipoAnuncio(): Promise<any[]> {
+    return new Promise<any[]>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/tipo_anuncio/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+
+      this.http.get<any[]>(url, { headers }).subscribe(
+        (response: any[]) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    },
+    );
+  }
+
   getPet(petId: number): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       const url = `https://luyinq.pythonanywhere.com/mascota/${petId}/`;
@@ -208,21 +256,35 @@ export class ApiService {
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-
+  
       this.http.get<any[]>(url, { headers }).subscribe(
         async (response: any[]) => {
           const anunciosWithPosicion: any[] = [];
-
+  
+          const posiciones = await this.http.get<any[]>('https://luyinq.pythonanywhere.com/posicion/', { headers }).toPromise();
+  
           for (const anuncio of response) {
-            const posicion = await this.http.get<any>('https://luyinq.pythonanywhere.com/posicion/?anuncio=' + anuncio.id, { headers }).toPromise();
             const mascota = await this.http.get<any>('https://luyinq.pythonanywhere.com/mascota/' + anuncio.mascota + '/', { headers }).toPromise();
-
-            anuncio.posicion = posicion; // Obtener el primer elemento del array de posiciones
-            anuncio.mascota = mascota; // Agregar la propiedad "mascotaInfo" al anuncio y asignarle la información de la mascota
-
+            
+            anuncio.mascota = mascota; // Assign the "mascota" property to the ad and assign the mascot information
+  
+            if (posiciones && posiciones.length > 0) {
+              // Filter the specific position associated with the ad
+              const posicionAnuncio = posiciones.find((pos) => pos.anuncio === anuncio.id);
+  
+              if (posicionAnuncio) {
+                anuncio.posicion = posicionAnuncio;
+              } else {
+                anuncio.posicion = null;
+              }
+            } else {
+              anuncio.posicion = null;
+            }
+  
             anunciosWithPosicion.push(anuncio);
           }
-
+          
+  
           resolve(anunciosWithPosicion);
         },
         (error) => {
@@ -231,6 +293,40 @@ export class ApiService {
       );
     });
   }
+  
+  
+
+
+  createAnuncio(descripcion: string, categoria: number, mascota: number): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const body = {
+      descripcion: descripcion,
+      estado: 3,
+      tipo: categoria,
+      mascota: mascota,
+      autor: localStorage.getItem('rut')
+    };
+
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+
+    return this.http.post('https://luyinq.pythonanywhere.com/anuncio/', body, { headers });
+  }
+
+  createPosicion(latitud: number, longitud: number, anuncio: number): Observable<any> {
+    const token = localStorage.getItem('token');
+
+    const body = {
+      latitud: latitud,
+      longitud: longitud,
+      anuncio: anuncio,
+      radio: 100
+    };
+
+    const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
+    return this.http.post('https://luyinq.pythonanywhere.com/posicion/', body, { headers });
+  }
+  
 
 
 

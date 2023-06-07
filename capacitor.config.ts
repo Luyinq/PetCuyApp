@@ -9,6 +9,14 @@ const config: CapacitorConfig = {
     androidScheme: 'https'
   },
   plugins: {
+    LocalNotifications: {
+      iconColor: "#488AFF",
+      smallIcon: 'res://drawable/petcuyicon',
+    },
+    Config: {
+      screenOrientation: 'portrait',
+      keyboardResize: false
+    },
     Keyboard: {
       resize: KeyboardResize.None
     },

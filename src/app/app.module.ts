@@ -15,6 +15,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, InicioSesionModule, FormulariosModule, MenuModule, HttpClientModule, ReactiveFormsModule,

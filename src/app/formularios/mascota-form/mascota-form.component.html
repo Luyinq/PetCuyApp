@@ -40,7 +40,7 @@
       <div>{{ getErrorMessage('tipoMascota') }}</div>
     </ion-text>
     
-    <ion-button expand="full" type="submit" [disabled]="!mascotaForm.valid || fotos.length === 0 || fotos.length > 2">
+    <ion-button id="guardar-button" expand="full" type="submit" [disabled]="!mascotaForm.valid || fotos.length === 0 || fotos.length > 2">
       {{ isEdit ? 'Guardar cambios' : 'Crear mascota' }}
     </ion-button>
   </form>
