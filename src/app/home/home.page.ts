@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef, AfterViewInit, OnDestroy, Renderer2  } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, ChangeDetectorRef, AfterViewInit, OnDestroy  } from '@angular/core';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import { AppComponent } from '../app.component';
@@ -41,13 +41,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
   selectedAnnouncementId: number | null = null;
 
 
-  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
+  constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
     const nombre = localStorage.getItem('nombre');
     this.main.nombre = nombre !== null ? nombre : '';
 
     LocalNotifications.addListener('localNotificationActionPerformed', (notification) => {
-        this.api.rut = notification.notification.id.toString()
-        this.router.navigate(["/perfil"]);
+        this.router.navigate(["/anuncio"], { queryParams: { id: notification.notification.id } });
       
     });
   }
@@ -83,9 +82,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
       maximumAge: 0,
       timeout: 5000,
     };
-
+  
     const shownAlerts = new Set<number>(); // Conjunto para almacenar los IDs de los anuncios con alertas mostradas
-
+  
     this.currentPositionSubscription = Geolocation.watchPosition(
       positionOptions,
       async (position: Position | null) => {
@@ -94,12 +93,15 @@ export class HomePage implements AfterViewInit, OnDestroy {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-
-          const isInsideCircle = this.checkPositionInsideCircles(currentPosition);
-          if (isInsideCircle) {
-            const currentAnuncio = this.findMarkerByPosition(currentPosition);
-            if (currentAnuncio && !shownAlerts.has(currentAnuncio.id)) {
-              console.log(  currentAnuncio)
+  
+          const insideCircles = this.checkPositionInsideCircles(currentPosition);
+  
+          for (let i = 0; i < insideCircles.length; i++) {
+            const isInsideCircle = insideCircles[i];
+            const currentAnuncio = this.allmarkersInfo[i];
+  
+            if (isInsideCircle && currentAnuncio && !shownAlerts.has(currentAnuncio.id)) {
+              console.log("Estás dentro de " + currentAnuncio.nombre);
               shownAlerts.add(currentAnuncio.id);
               this.showNotification(currentAnuncio.id, "¡ALERTA!", "Estás dentro de la zona de " + currentAnuncio.nombre);
             }
@@ -108,6 +110,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       }
     );
   }
+  
 
   findMarkerByPosition(position: any): any {
     for (const marker of this.allmarkersInfo) {
@@ -126,11 +129,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     return null;
   }
 
-  stopTrackingPosition() {
-    if (this.currentPositionSubscription) {
-      this.currentPositionSubscription.unsubscribe();
-    }
-  }
+
 
 
   unsubscribeFromRouterEvents() {
@@ -147,9 +146,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.newMap.removeAllMapListeners(); // Agrega paréntesis aquí
     this.hasMarker = false;
     this.markerId = "";
+    this.allmarkersInfo = [];
+    this.circles = [];
     this.cdr.detectChanges(); // Manually trigger change detection
-    this.allmarkersInfo.splice(0, this.allmarkersInfo.length);
-    this.circles.splice(0, this.circles.length);
   }
 
   async getCurrentPosition() {
@@ -255,7 +254,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     const markers = await this.api.getAnuncios(); // Reemplaza "tuApiObtenerMarcadores" con la llamada a tu API
     // Aquí debes realizar la llamada a la API para obtener los tipos de anuncio
     const tiposAnuncio = await this.api.listTipoAnuncio(); // Reemplaza con tu llamada a la API para obtener los tipos de anuncio
-  
+    this.circles = [];
     // Recorre los marcadores obtenidos y añádelos al mapa
     markers.forEach(async (marker) => {
       const lat = parseFloat(marker.posicion.latitud);
@@ -303,7 +302,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
         }
       ];
   
-      this.circles = circles;
+      this.circles.push(...circles);
   
       await this.newMap.addCircles(circles);
     });
@@ -323,27 +322,32 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.router.navigate(["/anuncio-form"], { queryParams })
   }
 
-  checkPositionInsideCircles(position: any): boolean {
+  checkPositionInsideCircles(position: any): boolean[] {
+    const insideCircles: boolean[] = [];
+  
     for (const circle of this.circles) {
       const circleCenter = circle.center;
       const circleRadius = circle.radius;
       const distance = this.calculateDistance(circleCenter, position);
-
+  
       if (distance <= circleRadius) {
-        return true;
+        insideCircles.push(true);
+      } else {
+        insideCircles.push(false);
       }
     }
-
-    return false;
+  
+    return insideCircles;
   }
+  
 
   calculateDistance(point1: any, point2: any): number {
     const lat1 = point1.lat;
     const lon1 = point1.lng;
     const lat2 = point2.lat;
     const lon2 = point2.lng;
-
-    const R = 6371; // Radio de la Tierra en kilómetros
+  
+    const R = 6371000; // Radio de la Tierra en metros (6371 km = 6371000 m)
     const dLat = this.degreesToRadians(lat2 - lat1);
     const dLon = this.degreesToRadians(lon2 - lon1);
     const a =
@@ -352,9 +356,10 @@ export class HomePage implements AfterViewInit, OnDestroy {
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-
+  
     return distance;
   }
+  
 
   degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
