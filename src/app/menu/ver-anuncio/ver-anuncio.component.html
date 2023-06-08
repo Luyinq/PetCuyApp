@@ -1,0 +1,38 @@
+<ion-content>
+  <ion-card *ngIf="anuncioData">
+    <ion-card-header>
+      Anuncio ID: {{ anuncioData.id }}
+    </ion-card-header>
+    
+    <ion-card-content>
+      <div class="tipo-container">
+        <ion-text class="tipo-text" style="color:black;"><b>{{ anuncioData.tipo.toUpperCase() }}</b>
+        </ion-text>
+      </div>
+      <ion-item>
+        <img src="{{ anuncioData.mascota.foto_1 }}" class="anuncio-image">
+      </ion-item>
+      <div class="description-container">
+        <ion-text class="description-text" style="color:black;">Descripción:
+        </ion-text>
+        <ion-text class="description-text">
+          {{ anuncioData.descripcion }}
+        </ion-text>
+      </div>
+      <ion-item>
+        <ion-label>Nombre</ion-label>
+        <ion-text>{{ anuncioData.mascota.nombre }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fecha</ion-label>
+        <ion-text>{{ datePipe.transform(anuncioData.fecha, 'dd/MM/yyyy') }}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-card *ngIf="!anuncioData">
+    <ion-text class="no-anuncio-text">No se encontró el anuncio</ion-text>
+  </ion-card>
+</ion-content>
+

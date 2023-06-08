@@ -1,0 +1,50 @@
+
+.no-anuncio-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    height: 100%;
+  }
+
+  .anuncio-image {
+    display: block; /* Asegura que la imagen se muestre como un bloque */
+    margin: 0 auto; /* Establece los márgenes izquierdo y derecho a "auto" para centrar la imagen horizontalmente */
+    max-width: 250px; /* Establece el ancho máximo de la imagen */
+    max-height: 250px; /* Establece la altura máxima de la imagen */
+    padding: 5px;
+  }
+
+
+  .description-container {
+    text-align: center;
+    margin-top: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .description-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .tipo-container {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .tipo-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 20px;
+  }
+  
+  
+  
+  
+  
+  
+  
+  

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Formulario Anuncio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="anuncioForm" (ngSubmit)="guardarAnuncio()" novalidate>
+    <ion-item>
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea formControlName="descripcion" placeholder="Descripción"></ion-textarea>
+    </ion-item>
+    <ion-text color="danger" *ngIf="anuncioForm.get('descripcion')?.invalid && anuncioForm.get('descripcion')?.touched">
+      <div>{{ getErrorMessage('descripcion') }}</div>
+    </ion-text>
+    
+    <ion-item>
+      <ion-label>Categoría</ion-label>
+      <ion-select formControlName="categoria">
+        <ion-select-option *ngFor="let option of categoriaOptions" [value]="option.id">{{ option.nombre }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-text color="danger" *ngIf="anuncioForm.get('categoria')?.invalid && anuncioForm.get('categoria')?.touched">
+      <div>{{ getErrorMessage('categoria') }}</div>
+    </ion-text>
+    
+    <ion-item>
+      <ion-label>Mascota</ion-label>
+      <ion-select formControlName="mascota" (ionChange)="onMascotaChange($event)">
+        <ion-select-option *ngFor="let option of mascotaOptions" [value]="option.id">
+          <ion-label>{{ option.nombre }}</ion-label>
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-img class="mascota-image" *ngIf="mascotaSeleccionada" [src]="getFotoMascotaSeleccionada()"></ion-img>
+    <ion-text color="danger" *ngIf="anuncioForm.get('mascota')?.invalid && anuncioForm.get('mascota')?.touched">
+      <div>{{ getErrorMessage('mascota') }}</div>
+    </ion-text>
+    
+    <ion-button id="guardar-button" expand="full" type="submit" [disabled]="botonDeshabilitado || !anuncioForm.valid">
+      {{ isEdit ? 'Guardar cambios' : 'Crear anuncio' }}
+    </ion-button>
+  </form>
+  <ion-text color="danger" *ngIf="errorMessage">
+    <div>{{ errorMessage }}</div>
+  </ion-text>
+</ion-content>

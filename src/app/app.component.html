@@ -26,15 +26,15 @@
 
     <ion-menu-toggle>
     <ion-item (click)="gotoMyProfile()" detail="true">
-    <ion-label>Ver perfil</ion-label>
+    <ion-label>Mi perfil</ion-label>
     <ion-icon slot="start" name="happy-outline"></ion-icon>
   </ion-item>
 </ion-menu-toggle>
 
 <ion-menu-toggle>
-  <ion-item (click)="gotoOtherProfile()" detail="true">
-  <ion-label>Ver perfil2</ion-label>
-  <ion-icon slot="start" name="happy-outline"></ion-icon>
+  <ion-item [routerLink]="['/mis-mascotas']" detail="true">
+  <ion-label>Mis mascotas</ion-label>
+  <ion-icon slot="start" name="paw-outline"></ion-icon>
 </ion-item>
 </ion-menu-toggle>
   
@@ -49,7 +49,7 @@
 <ion-menu-toggle>
   <ion-item (click)="toChangePassword()" detail="true">
   <ion-label>Cambiar contraseña</ion-label>
-  <ion-icon slot="start" name="create-outline"></ion-icon>
+  <ion-icon slot="start" name="key-outline"></ion-icon>
 </ion-item>
 </ion-menu-toggle>
 
@@ -84,7 +84,7 @@
 <ion-menu-toggle>
   <ion-item (click)="logout()" detail="true">
   <ion-label>Cerrar Sesion</ion-label>
-  <ion-icon slot="start" name="return-up-back-outline"></ion-icon>
+  <ion-icon slot="start" name="exit-outline"></ion-icon>
 </ion-item>
 </ion-menu-toggle>
 
