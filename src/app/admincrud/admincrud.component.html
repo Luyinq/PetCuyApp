@@ -1,6 +1,16 @@
 <ion-list *ngIf="esAdminUsuarioURL()">
   <ion-title class="titulo">Información de usuarios</ion-title>
+  <ion-searchbar
+  placeholder="Filtrar Rut"
+  [(ngModel)]="filtroRut"
+  (ionChange)="filtrarDatos()"
+  (input)="filtrarInput($event)"
+></ion-searchbar>
+
+  <!-- Mostrar mensaje si no se encuentran resultados -->
+
   <ion-item class="ion-justify-content-between" *ngFor="let entidad of datos">
+
     
 
     <ion-card class="users-info-card ion-no-padding">
@@ -27,13 +37,12 @@
         </ion-item>
       </ion-card-content>
       <div class="center-icons">
-        <ion-button (click)="editarUsuario(entidad)">
-          <ion-icon name="create-outline" class="icono"></ion-icon>
+        <ion-button shape="round" color="success" (click)="editarUsuario(entidad)">
+          <ion-icon slot="icon-only" name="create-outline" class="icono"></ion-icon>
         </ion-button>
-        <ion-button (click)="eliminarUsuario(entidad)">
-          <ion-icon name="close-circle-outline" class="icono"></ion-icon>
+        <ion-button shape="round" color="danger" (click)="eliminarUsuario(entidad)">
+          <ion-icon slot="icon-only" name="close-circle-outline" class="icono"></ion-icon>
         </ion-button>
-        
       </div>
     </ion-card>
     
