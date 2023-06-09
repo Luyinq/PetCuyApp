@@ -9,3 +9,23 @@ ion-card {
   width: 100%;
   background: transparent;
 }
+
+.map {
+  --background: transparent;
+}
+
+.marker-img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.sticky-button {
+  position: sticky;
+  bottom: 0;
+  z-index: 999;
+}
+
+.hidden {
+  display: none !important;
+}

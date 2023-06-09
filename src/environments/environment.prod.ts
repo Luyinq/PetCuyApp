@@ -3,6 +3,7 @@ export const environment = {
   cloudify: {
     username: 'dfbon2wfu',
     presetProfilePic: 'profile_auth',
+    presetMascotas: 'mascotas_auth',
     apiKey: '455175275411474',
     apiSecret: 'A1g62bRQtoRq8DRd-q7zHB9Oxkk',
   },

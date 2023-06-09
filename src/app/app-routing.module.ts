@@ -7,7 +7,9 @@ import { CambiarContrasenaComponent } from './menu/cambiar-contrasena/cambiar-co
 import { EditarPerfilComponent } from './menu/editar-perfil/editar-perfil.component';
 import { MisMascotasComponent } from './menu/mis-mascotas/mis-mascotas.component';
 import { VerPerfilComponent } from './menu/ver-perfil/ver-perfil.component';
+import { VerAnuncioComponent } from './menu/ver-anuncio/ver-anuncio.component';
 import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.component';
+import { AnuncioFormComponent } from './formularios/anuncio-form/anuncio-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
 
@@ -53,6 +55,11 @@ const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'anuncio',
+    component: VerAnuncioComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
     path: 'mascota-form',
     component: MascotaFormComponent,
     canActivate: [AuthGuardGuard]
@@ -60,6 +67,11 @@ const routes: Routes = [
   {
     path: 'mascota-form/:isEdit/:petId',
     component: MascotaFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'anuncio-form',
+    component: AnuncioFormComponent,
     canActivate: [AuthGuardGuard]
   },
   {

@@ -9,16 +9,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FormGroupDirective } from '@angular/forms'; // Import FormGroupDirective
 import { ApiService } from '../shared/api.service';
+import { VerAnuncioComponent } from './ver-anuncio/ver-anuncio.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
-  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent],
+  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent],
   imports: [
     CommonModule,
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
-  providers: [FormGroupDirective, ApiService], // Add FormGroupDirective to providers
+  providers: [FormGroupDirective, ApiService, DatePipe], // Add FormGroupDirective to providers
 })
 export class MenuModule { }
