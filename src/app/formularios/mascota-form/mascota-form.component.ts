@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators, ValidatorFn, AbstractC
 import { ApiService } from 'src/app/shared/api.service';
 import { environment } from 'src/environments/environment.prod';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -78,6 +79,7 @@ export class MascotaFormComponent implements OnInit {
 
   async guardarMascota() {
     if (this.mascotaForm.valid && this.fotos.length > 0 && this.fotos.length <= 2) {
+      this.api.showLoading();
       const mascota: Record<string, any> = {
         nombre: this.mascotaForm.value.nombre ?? '',
         tipo: Number(this.mascotaForm.value.tipoMascota) ?? 0,
@@ -103,14 +105,16 @@ export class MascotaFormComponent implements OnInit {
           await this.uploadPhotos(Number(petIdParam), mascota);
         } else {
           const response: any = await this.http.post('https://luyinq.pythonanywhere.com/mascota/', mascota, { headers }).toPromise();
-          this.api.presentToast(response.message);
           const mascotaId = response.data.id;
           await this.uploadPhotos(mascotaId, mascota);
+          this.api.dismissLoading();
+          this.api.presentToast(response.message);
         }
   
         this.router.navigate(['/mis-mascotas']);
       } catch (error: any) {
         console.log(error);
+        this.api.dismissLoading();
         this.api.presentToast(error.message);
       } finally {
         // Enable the button
@@ -120,6 +124,7 @@ export class MascotaFormComponent implements OnInit {
         }
       }
     } else {
+      this.api.dismissLoading();
       this.api.presentToast("Existe un error en el formulario");
     }
   }
