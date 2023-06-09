@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment.prod';
 import { SHA1 } from 'crypto-js';
 import { ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { LoadingController } from '@ionic/angular';
 
 
 @NgModule({
@@ -25,9 +26,20 @@ export class ApiService {
 
   rut: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private toastController: ToastController) { }
+  constructor(private loadingController: LoadingController, private http: HttpClient, private router: Router, private toastController: ToastController) { }
 
 
+  async showLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando...',
+    });
+    await loading.present();
+  }
+
+  async dismissLoading() {
+    await this.loadingController.dismiss();
+  }
+  
   async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
