@@ -31,3 +31,42 @@
     top: 50%; 
     transform: translateY(-50%);
 }
+
+.loginForm{
+    margin-top: -50px;
+}
+
+.password{
+    margin-top: 10px;
+}
+.olvidePass{
+    padding-left: 52px; 
+    margin-top: 20px;
+
+}
+
+.crearCuenta {
+    padding-left: 70px; 
+    border: none !important;
+    box-shadow: none !important;
+    margin-top: 10px; //con esto pude acortar la distancia entre dos elementos ion-item
+
+  }
+
+.registrate {
+    margin-top: -15px;
+    padding-left: 105px;
+    border: none !important;
+    box-shadow: none !important;
+
+  }
+
+.ion-label, p {
+    text-transform: uppercase;
+  }
+
+ion-content{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: aquamarine;
+}
+

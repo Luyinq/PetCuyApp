@@ -1,23 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Iniciar sesión</ion-title>
+    <ion-title style="font-family: Arial, Helvetica, sans-serif;">Iniciar sesión</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content color="black" >
   <ion-img style="padding-left: 6%;" src="/assets/imagenes/logo-petcuy.png"></ion-img>
-  <form (submit)="submitForm()" [formGroup]="forgotForm">
+  <form (submit)="submitForm()" [formGroup]="forgotForm" class="loginForm">
     <ion-item lines="full" *ngIf="forgotForm">
-      <ion-label position="floating">Rut</ion-label>
-      <ion-input type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
+      <ion-label style="font-family: helvetica;" position="floating">RUT</ion-label>
+      <ion-input style="margin-top: 20px;" type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
     </ion-item>
-    <ion-text color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
+    <ion-text style="margin-top: -10px; font-size: 14px; padding-left: 14px;  " color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
       {{ getErrorMessage('rut') }}
     </ion-text>
     
-    <ion-item lines="full" *ngIf="forgotForm">
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="{{ showPassword ? 'text' : 'password' }}" name="password" maxlength="20" formControlName="password" required></ion-input>
+    <ion-item lines="full" *ngIf="forgotForm" class="password">
+      <ion-label style="margin-top: 30px; font-family: helvetica; font-size: 15px;" position="floating">CONTRASEÑA</ion-label>
+      <ion-input style="margin-top: 20px; font-family: helvetica;" type="{{ showPassword ? 'text' : 'password' }}" name="password" maxlength="20" formControlName="password" required></ion-input>
       <ion-icon id="passwordEye"
       slot="end"
       name="{{ showPassword ? 'eye-off' : 'eye' }}"
@@ -25,13 +25,15 @@
     ></ion-icon>
     </ion-item>
     
-    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="forgotForm.invalid">Iniciar sesión</ion-button>
+    <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="forgotForm.invalid">INICIAR SESIÓN</ion-button>
   </form>
-  <ion-item>
-    <a [routerLink]="['/olvide-contrasena']" style="font-size: 14px;">Olvidaste tu contraseña?</a>
+  <ion-item lines="none" class="olvidePass">
+    <a [routerLink]="['/olvide-contrasena']" style="font-size: 14px; text-decoration: none; font-family: helvetica;">¿OLVIDASTE TU CONTRASEÑA?</a>
   </ion-item>
-  <ion-item>
-    <p>¿No tienes cuenta?</p>
-    <a [routerLink]="['/registro']">Registrarse</a>
+  <ion-item lines="none" class="crearCuenta">
+    <p>¿NO TIENES CUENTA?</p> 
+  </ion-item>
+  <ion-item lines="none" class="registrate">
+    <a style="text-decoration: none; font-family: helvetica;" [routerLink]="['/registro']">REGISTRATE</a>
   </ion-item>
 </ion-content>
