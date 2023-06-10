@@ -26,6 +26,8 @@ export class AppComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
+
+
   uploadImage(event: any) {
     const publicId = this.localStorage?.getItem('rut') || '';
     const file = event.target.files[0];

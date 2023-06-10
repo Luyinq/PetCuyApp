@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Mis Anuncios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-text *ngIf="!anuncios && !loading" class="no-pets-text">
+    No has creado ningún anuncio.
+  </ion-text>
+
+  <div *ngIf="anuncios && !loading" class="content-container">
+    <ion-list>
+      <ion-item style="margin-top: 10px;" *ngFor="let anuncio of anuncios" class="custom-item">
+        <ion-thumbnail slot="start" class="pet-thumbnail">
+          <ion-img [src]="anuncio.mascota.foto_1" alt="Pet Image"></ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-item>
+            <ion-label class="custom-label">Mascota:</ion-label>
+            <ion-note slot="end">{{ anuncio.mascota.nombre }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Tipo:</ion-label>
+            <ion-note slot="end">{{ anuncio.tipo }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Fecha:</ion-label>
+            <ion-note slot="end">{{ datePipe.transform(anuncio.fecha, 'dd/MM/yyyy') }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Contacto:</ion-label>
+            <ion-button (click)="gotoPerfil(anuncio.contacto)" *ngIf="anuncio.contacto" slot="end" shape="round" fill="solid" color="tertiary" style="text-transform: none;">Ver &nbsp;<ion-icon name="search"></ion-icon></ion-button>
+            <ion-note *ngIf="!anuncio.contacto" slot="end">No posee</ion-note>
+          </ion-item>
+          <br>
+          <ion-buttons class="ion-buttons-centered">
+            <ion-button (click)="deleteAnuncio(anuncio.id)" color="danger" class="button-large custom-button" >
+              <ion-icon name="trash" class="icon-medium" style="color: white;"></ion-icon>
+            </ion-button>
+            <ion-button (click)="gotoAnuncio(anuncio.id)" color="primary" class="button-large custom-button" >
+              <ion-icon style="color:white;" name="eye"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+

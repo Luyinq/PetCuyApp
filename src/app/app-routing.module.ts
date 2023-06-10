@@ -12,6 +12,8 @@ import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.co
 import { AnuncioFormComponent } from './formularios/anuncio-form/anuncio-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+import { MisAnunciosComponent } from './menu/mis-anuncios/mis-anuncios.component';
+
 
 const routes: Routes = [
   {
@@ -72,6 +74,11 @@ const routes: Routes = [
   {
     path: 'anuncio-form',
     component: AnuncioFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mis-anuncios',
+    component: MisAnunciosComponent,
     canActivate: [AuthGuardGuard]
   },
   {

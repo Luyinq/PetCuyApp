@@ -7,6 +7,12 @@ import { environment } from '../../environments/environment.prod';
 import { ApiService } from '../shared/api.service';
 import { AlertController } from '@ionic/angular';
 import { LocalNotifications, ScheduleOptions, CancelOptions, Channel } from '@capacitor/local-notifications';
+import {
+  ActionPerformed,
+  PushNotificationSchema,
+  PushNotifications,
+  Token,
+} from '@capacitor/push-notifications';
 
 
 
@@ -71,6 +77,52 @@ export class HomePage implements AfterViewInit, OnDestroy {
         } else {
           this.createMap(); // Recreate the map when navigating back to the page
           this.startTrackingPosition();
+          console.log('Initializing HomePage');
+
+          // Request permission to use push notifications
+          // iOS will prompt user and return if they granted permission or not
+          // Android will just grant without prompting
+          PushNotifications.requestPermissions().then(result => {
+            if (result.receive === 'granted') {
+              // Register with Apple / Google to receive push via APNS/FCM
+              PushNotifications.register();
+            } else {
+              // Show some error
+            }
+          });
+      
+          // On success, we should be able to receive notifications
+          PushNotifications.addListener('registration', (token: Token) => {
+            console.log(token.value);
+            this.api.saveTokenMsg(token.value).subscribe(
+              response => {
+                localStorage.setItem('msgToken', token.value)
+                console.log(response);
+              },
+              error => {
+                // Handle error
+                console.error(error);
+              }
+            );
+          });
+      
+          // Some issue with our setup and push will not work
+          PushNotifications.addListener('registrationError',
+            (error: any) => {
+            }
+          );
+      
+          // Show us the notification payload if the app is open on our device
+          PushNotifications.addListener('pushNotificationReceived',
+            (notification: PushNotificationSchema) => {
+            }
+          );
+      
+          // Method called when tapping on a notification
+          PushNotifications.addListener('pushNotificationActionPerformed',
+            (notification: ActionPerformed) => {
+            }
+          );
         }
       }
     });
@@ -250,66 +302,63 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   async insertMarkersFromAPI() {
-    // Aquí debes realizar la llamada a la API para obtener los marcadores
-    const markers = await this.api.getAnuncios(); // Reemplaza "tuApiObtenerMarcadores" con la llamada a tu API
-    // Aquí debes realizar la llamada a la API para obtener los tipos de anuncio
-    const tiposAnuncio = await this.api.listTipoAnuncio(); // Reemplaza con tu llamada a la API para obtener los tipos de anuncio
+    const markers = await this.api.getAnuncios();
+    const tiposAnuncio = await this.api.listTipoAnuncio();
     this.circles = [];
-    // Recorre los marcadores obtenidos y añádelos al mapa
-    markers.forEach(async (marker) => {
-      const lat = parseFloat(marker.posicion.latitud);
-      const lng = parseFloat(marker.posicion.longitud);
-      // Buscar el nombre del tipo basado en el id
-      const tipo = tiposAnuncio.find((tipo) => tipo.id === marker.tipo);
-      const tipoNombre = tipo ? tipo.nombre : ''; // Obtener el nombre del tipo si se encontró, o una cadena vacía si no se encontró
-      
+    this.allmarkersInfo = [];
   
-      await this.newMap.addMarker({
-        coordinate: {
+    markers.forEach(async (marker) => {
+      if (!marker.isDeleted) { // Verificar si el anuncio no está eliminado
+        const lat = parseFloat(marker.posicion.latitud);
+        const lng = parseFloat(marker.posicion.longitud);
+        const tipo = tiposAnuncio.find((tipo) => tipo.id === marker.tipo);
+        const tipoNombre = tipo ? tipo.nombre : '';
+  
+        await this.newMap.addMarker({
+          coordinate: {
+            lat: lat,
+            lng: lng,
+          },
+          draggable: false,
+          title: tipoNombre + " - " + marker.mascota.nombre,
+          iconSize: {
+            width: 100,
+            height: 100
+          },
+          iconAnchor: {
+            x: 50,
+            y: 50
+          },
+          snippet: marker.descripcion,
+        });
+  
+        this.allmarkersInfo.push({
+          id: marker.id,
+          nombre: marker.mascota.nombre,
           lat: lat,
           lng: lng,
-        },
-        draggable: false,
-        title: tipoNombre + " - " + marker.mascota.nombre,
-        iconSize: {
-          width: 100,
-          height: 100
-        },
-        iconAnchor: {
-          x: 50,
-          y: 50
-        },
-        snippet: marker.descripcion,
-      });
+          foto: marker.mascota.foto_1
+        });
   
-      this.allmarkersInfo.push({
-        id: marker.id,
-        nombre: marker.mascota.nombre,
-        lat: lat,
-        lng: lng,
-        foto: marker.mascota.foto_1
-      });
+        const circles = [
+          {
+            center: { lat: lat, lng: lng },
+            radius: 100,
+            fillColor: 'blue',
+            fillOpacity: 0.1,
+            strokeColor: 'blue',
+            strokeWeight: 1,
+            clickable: false
+          }
+        ];
   
-      const circles = [
-        {
-          center: { lat: lat, lng: lng },
-          radius: 100,
-          fillColor: 'blue',
-          fillOpacity: 0.1,
-          strokeColor: 'blue',
-          strokeWeight: 1,
-          clickable: false
-        }
-      ];
+        this.circles.push(...circles);
   
-      this.circles.push(...circles);
-  
-      await this.newMap.addCircles(circles);
+        await this.newMap.addCircles(circles);
+      }
     });
-  
-    console.log(markers);
-    console.log(this.allmarkersInfo);
   }
+  
   
   
 
