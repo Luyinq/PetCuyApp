@@ -18,6 +18,8 @@ export class AdmincrudComponent  implements OnInit {
   apellidoPutError!: string;
   correoPutError!: string;
   celularPutError!: string;
+  datosOriginales: any[] = []; // Variable para almacenar los datos originales
+
 
   updateForm = new FormGroup({
     nombre: new FormControl('',[Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
@@ -65,23 +67,23 @@ export class AdmincrudComponent  implements OnInit {
   }
   
   obtenerDatosEntidad(entidad: string) {
-    const rutLocalStorage = localStorage.getItem('rut'); // Obtener el rut almacenado en el localStorage
+    const rutLocalStorage = localStorage.getItem('rut');
+  
     if (entidad === 'usuario' && rutLocalStorage) {
       this.apiService.getUrlData(entidad).subscribe((response: any) => {
-        this.datos = Object.entries(response).map(([key, value]) => value);
-  
-        // Filtrar los datos para excluir aquellos que tengan el mismo rut
-        this.datos = this.datos.filter((dato: any) => dato.rut !== rutLocalStorage);
-  
+        this.datosOriginales = Object.entries(response).map(([key, value]) => value);
+        this.datos = this.datosOriginales.filter((dato: any) => dato.rut !== rutLocalStorage);
         console.log(this.datos);
       });
     } else {
       this.apiService.getUrlData(entidad).subscribe((response: any) => {
-        this.datos = Object.entries(response).map(([key, value]) => value);
+        this.datosOriginales = Object.entries(response).map(([key, value]) => value);
+        this.datos = this.datosOriginales;
         console.log(this.datos);
       });
     }
   }
+
   esAdminUsuarioURL(): boolean {
     return window.location.href.includes('/admin/usuario');
   }
@@ -248,41 +250,41 @@ filtrarDatos() {
 
   if (!filtroActual) {
     this.obtenerDatosEntidad('usuario');
-    return;
+    return console.log(filtroActual);
   }
 
   const regex = /^[0-9]+$/;
 
   if (!regex.test(filtroActual)) {
     this.mostrarMensajeRutNoEncontrado();
-    return;
+    return console.log(filtroActual);
   }
 
   const filtro = filtroActual.toLowerCase();
-  const resultados = this.datos.filter((dato: any) =>
+  const resultados = this.datosOriginales.filter((dato: any) =>
     dato.rut.toLowerCase().startsWith(filtro)
   );
 
   if (resultados.length === 0) {
     this.mostrarMensajeRutNoEncontrado();
-    return; // Detener la ejecución para evitar la actualización de datos innecesaria
-  }
-
-  // Actualizar la lista de datos con los resultados de búsqueda
-  this.datos = resultados;
-}
-
-filtrarInput(event: any): void {
-  const input = event.target.value;
-  const regex = /^[0-9kK]*$/;
-
-  if (!regex.test(input)) {
-    event.target.value = this.filtroRut;
     return;
   }
 
-  this.filtroRut = input;
+  this.datos = resultados;
 }
+
+
+filtrarInput(event: any): void {
+  const input = event.target.value;
+  const filteredInput = input.replace(/[^0-9kK]/g, '');
+
+  if (filteredInput !== input) {
+    event.target.value = filteredInput;
+    this.filtroRut = filteredInput;
+  }
+}
+
+
 
 // ...
 
