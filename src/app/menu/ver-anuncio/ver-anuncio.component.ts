@@ -137,17 +137,28 @@ export class VerAnuncioComponent {
     const contactoUrl = this.apiUrl + 'anuncio/' + this.anuncioData.id + '/';
     const headers = new HttpHeaders().set('Authorization', 'Token ' + localStorage.getItem('token'));
     const contactoData = { contacto: localStorage.getItem('rut') };
+    const title = "¡Buenas noticias!"
+    const body = "Alguien está interesado en el anuncio de " + this.anuncioData.mascota.nombre
   
     this.http.put(contactoUrl, contactoData, { headers }).subscribe(
-      (response) => {
+      async (response) => {
         console.log('Contacto actualizado:', response);
         this.cdr.detectChanges();
+        // Llamar a la función sendMessageWithFCM después de actualizar el contacto
+        try {
+          await this.api.sendMessageWithFCM(this.anuncioData.autorData.msgToken, title, body);
+          this.gotoPerfil();
+          this.anuncioData = null;
+        } catch (error) {
+          console.log('Error al enviar el mensaje con FCM:');
+        }
       },
       (error) => {
-        console.error('Error al actualizar el contacto:', error);
+        console.log('Error al actualizar el contacto:', error);
       }
     );
   }
+  
 
   gotoPerfil(){
     this.api.rut = this.anuncioData.autor
