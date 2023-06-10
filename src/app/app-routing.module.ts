@@ -5,10 +5,18 @@ import { OlvideContrasenaComponent } from './inicio-sesion/olvide-contrasena/olv
 import { RegistroComponent } from './inicio-sesion/registro/registro.component';
 import { CambiarContrasenaComponent } from './menu/cambiar-contrasena/cambiar-contrasena.component';
 import { EditarPerfilComponent } from './menu/editar-perfil/editar-perfil.component';
+import { MisMascotasComponent } from './menu/mis-mascotas/mis-mascotas.component';
 import { VerPerfilComponent } from './menu/ver-perfil/ver-perfil.component';
+import { VerAnuncioComponent } from './menu/ver-anuncio/ver-anuncio.component';
+import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.component';
+import { AnuncioFormComponent } from './formularios/anuncio-form/anuncio-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+
 import { AdmincrudComponent } from './admincrud/admincrud.component'
+
+import { MisAnunciosComponent } from './menu/mis-anuncios/mis-anuncios.component';
+
 
 const routes: Routes = [
   {
@@ -42,6 +50,11 @@ const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'mis-mascotas',
+    component: MisMascotasComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
     path: 'perfil',
     component: VerPerfilComponent,
     canActivate: [AuthGuardGuard]
@@ -49,6 +62,31 @@ const routes: Routes = [
   {
     path: 'admin/:entidad',
     component: AdmincrudComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'anuncio',
+    component: VerAnuncioComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form',
+    component: MascotaFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mascota-form/:isEdit/:petId',
+    component: MascotaFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'anuncio-form',
+    component: AnuncioFormComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'mis-anuncios',
+    component: MisAnunciosComponent,
     canActivate: [AuthGuardGuard]
   },
   {

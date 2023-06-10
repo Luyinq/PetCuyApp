@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Mis Mascotas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-text *ngIf="!pets" class="no-pets-text">
+    No tienes mascotas registradas.
+  </ion-text>
+
+  <div class="content-container">
+    <ion-list>
+      <ion-item style="margin-top: 10px;" *ngFor="let pet of pets" class="custom-item">
+        <ion-thumbnail slot="start" class="pet-thumbnail">
+          <ion-img [src]="pet.foto_1" alt="Pet Image"></ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-item>
+            <ion-label class="custom-label">Nombre:</ion-label>
+            <ion-note slot="end">{{ pet.nombre }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Tipo:</ion-label>
+            <ion-note slot="end">{{ pet.tipo }}</ion-note>
+          </ion-item>
+          <br>
+          <ion-buttons class="ion-buttons-centered">
+            <ion-button color="danger" class="button-large custom-button" (click)="deletePet(pet)">
+              <ion-icon name="trash" class="icon-medium" style="color: white;"></ion-icon>
+            </ion-button>
+            <ion-button color="primary" class="button-large custom-button" (click)="mascotaForm('Editar', pet.id)">
+              <ion-icon name="create" class="icon-medium" style="color: white;"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+  
+  <ion-button class="sticky-button" expand="full" (click)="mascotaForm('Crear')">Crear Mascota</ion-button>
+</ion-content>
+

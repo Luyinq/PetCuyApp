@@ -1,0 +1,60 @@
+<ion-content>
+  <ion-card *ngIf="!loading">
+    <ion-card-header>
+      Anuncio ID: {{ anuncioData.id }}
+    </ion-card-header>
+    
+    <ion-card-content>
+      <div class="tipo-container">
+        <ion-text class="tipo-text" style="color:black;"><b>{{ anuncioData.tipo }}</b></ion-text>
+      </div>
+      <ion-item>
+        <img src="{{ anuncioData.mascota.foto_1 }}" class="anuncio-image">
+      </ion-item>
+      <div class="description-container">
+        <ion-text class="description-text" style="color:black;">Descripción:</ion-text>
+        <ion-text class="description-text">{{ anuncioData.descripcion }}</ion-text>
+      </div>
+      <ion-item>
+        <ion-label>Nombre</ion-label>
+        <ion-text>{{ anuncioData?.mascota?.nombre }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tipo Mascota</ion-label>
+        <ion-text>{{ anuncioData.mascota.tipo }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fecha</ion-label>
+        <ion-text>{{ datePipe.transform(anuncioData.fecha, 'dd/MM/yyyy') }}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="!loading && checkContacto()">
+    <ion-card-header>
+      Datos de contacto
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Nombre</ion-label>
+        <ion-text>{{ anuncioData.autorData?.nombre }} {{ anuncioData.autorData?.apellido }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Email</ion-label>
+        <ion-text>{{ anuncioData.autorData?.correo }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Celular</ion-label>
+        <ion-text>{{ anuncioData.autorData?.celular }}</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button *ngIf="!loading && checkContacto()" (click)="gotoPerfil()" expand="full">Ir al Perfil</ion-button>  
+  <ion-button *ngIf="!loading && checkContactoEmpty() && !checkAutor()" (click)="generateContacto()" expand="full">Contactar al autor</ion-button>  
+
+  <ion-card *ngIf="!anuncioData">
+    <ion-text class="no-anuncio-text">No se encontró el anuncio</ion-text>
+  </ion-card>
+</ion-content>
+

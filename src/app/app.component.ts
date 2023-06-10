@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './shared/api.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-root',
@@ -26,11 +27,13 @@ export class AppComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
+
+
   uploadImage(event: any) {
     const publicId = this.localStorage?.getItem('rut') || '';
     const file = event.target.files[0];
 
-    this.apiService.uploadImage(file, publicId)
+    this.apiService.uploadImage(file, publicId, environment.cloudify.presetProfilePic)
       .then((imageUrl: string) => {
         console.log(imageUrl);
         this.localStorage?.setItem('foto', imageUrl);
@@ -98,11 +101,7 @@ export class AppComponent implements OnInit {
     this.apiService.rut = this.localStorage?.getItem('rut') || '';
     this.router.navigate(['/perfil']);
   }
-
-  gotoOtherProfile() {
-    this.apiService.rut = "222222222";
-    this.router.navigate(['/perfil']);
-  }
+  
 
 }
 
