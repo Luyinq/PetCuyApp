@@ -1,6 +1,7 @@
 <ion-list *ngIf="esAdminUsuarioURL()">
   <ion-title class="titulo">Información de usuarios</ion-title>
-  <ion-searchbar placeholder="Filtrar Rut" [(ngModel)]="filtroRut" (ionChange)="filtrarDatos()"
+  <ion-searchbar placeholder="Filtrar Rut" [(ngModel)]="filtroRut" 
+  (ionChange)="filtrarDatos()"
     (input)="filtrarInput($event)"></ion-searchbar>
 
   <ion-item class="ion-justify-content-between" *ngFor="let entidad of datos">
