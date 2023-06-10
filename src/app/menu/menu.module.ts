@@ -11,9 +11,10 @@ import { FormGroupDirective } from '@angular/forms'; // Import FormGroupDirectiv
 import { ApiService } from '../shared/api.service';
 import { VerAnuncioComponent } from './ver-anuncio/ver-anuncio.component';
 import { DatePipe } from '@angular/common';
+import { MisAnunciosComponent } from './mis-anuncios/mis-anuncios.component';
 
 @NgModule({
-  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent],
+  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent, MisAnunciosComponent],
   imports: [
     CommonModule,
     IonicModule,
