@@ -8,4 +8,34 @@
   padding-top: 16px;
   font-weight: bold;
 }
+.data-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  
+}
+
+.label-column {
+  width: 35%;
+}
+
+.input-column {
+  width: 65%;
+}
+
+.data-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+ion-label{
+  padding-right: 0%;
+}
 

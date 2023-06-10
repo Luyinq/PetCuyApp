@@ -164,4 +164,28 @@ export class ApiService {
   
     return this.http.delete(url, { headers });
   }
+  
+
+  editarUsuario(rut: any, data: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com/usuario';
+    const url = `${baseUrl}/${rut}/`; // Reemplaza la URL con la ruta correspondiente para editar un usuario
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+  
+    return this.http.put(url, data, { headers });
+  }
+
+  editarTipoMascota(tipoMascota: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com/';
+    const url = `${baseUrl}/tipo_mascota/${tipoMascota.id}`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    return this.http.put(url, tipoMascota);
+  }
+  eliminarTipoMascota(id: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_mascota/${id}`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    return this.http.delete(url);
+  }
+  
 }

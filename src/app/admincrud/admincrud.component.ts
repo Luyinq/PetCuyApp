@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../shared/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -13,8 +14,48 @@ import { AlertController } from '@ionic/angular';
 export class AdmincrudComponent  implements OnInit {
   datos: any[] =[];
   filtroRut: string = '';
+  nombrePutError!: string;
+  apellidoPutError!: string;
+  correoPutError!: string;
+  celularPutError!: string;
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private alertController: AlertController) { }
+  updateForm = new FormGroup({
+    nombre: new FormControl('',[Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+    apellido: new FormControl('',[Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+    correo: new FormControl('',[Validators.required, Validators.email]),
+    celular: new FormControl('',[Validators.required, Validators.min(900000000), Validators.max(999999999)])
+  });
+
+  constructor(private apiService: ApiService, 
+    private route: ActivatedRoute, 
+    public alertController: AlertController) { 
+
+    }
+  getErrorMessage(controlName: string) {
+    const control = this.updateForm.get(controlName);
+    if (control?.hasError('required')) {
+      return 'El campo es requerido.';
+    }
+    if (control?.hasError('minlength')) {
+      return `El campo debe tener al menos ${control?.errors?.['minlength']?.requiredLength} caracteres.`;
+    }
+    if (control?.hasError('maxlength')) {
+      return `El campo no puede tener más de ${control?.errors?.['maxlength']?.requiredLength} caracteres.`;
+    }
+    if (control?.hasError('pattern')) {
+      return 'El campo solo puede contener letras y números.';
+    }
+    if (control?.hasError('email')) {
+      return 'Ingrese un correo válido.';
+    }
+    if (control?.hasError('min')) {
+      return 'Ingrese un número válido.';
+    }
+    if (control?.hasError('max')) {
+      return 'Ingrese un número válido.';
+    }
+    return '';
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -83,33 +124,122 @@ export class AdmincrudComponent  implements OnInit {
   
     await alert.present();
   }
-  
-  
-  
-  
 
-  editarUsuario(entidad: string) {
-    // Lógica para modificar la entidad con el ID proporcionado
-  }
+// ...
 
-  async mostrarMensajeRutNoEncontrado() {
-    const alert = await this.alertController.create({
-      header: 'RUT no encontrado',
-      message: 'El RUT no existe en la base de datos.',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            window.location.reload(); // Recargar la página
+editarUsuario(entidad: any) {
+  // Lógica para enviar la solicitud de modificación de la entidad con el ID proporcionado
+  const rut = entidad.rut; // Obtén el rut del objeto 'entidad'
+  const data = {
+    nombre: entidad.nombre as string,
+    apellido: entidad.apellido as string,
+    correo: entidad.correo as string,
+    celular: entidad.celular as string
+  };
+  this.apiService.editarUsuario(rut, data).subscribe(
+    () => {
+      // Edición exitosa
+      console.log('Usuario editado');
+      this.obtenerDatosEntidad('usuario');
+    },
+    (error) => {
+      // Error al editar el usuario
+      console.error(error);
+      if (error.error.error.details) {
+          console.log(error.error.error.details)
+          if (error.error.error.details.nombre) {
+            this.nombrePutError = error.error.error.details.nombre[0];
+            this.presentAlert("Error", this.nombrePutError);
           }
+          if (error.error.error.details.apellido){
+            this.apellidoPutError = error.error.error.details.apellido[0];
+            this.presentAlert("Error", this.apellidoPutError);
+          }
+          if (error.error.error.details.correo){
+            this.correoPutError = error.error.error.details.correo[0];
+            this.presentAlert("Error", this.correoPutError);
+          }
+          if (error.error.error.details.celular){
+            this.celularPutError = error.error.error.details.celular[0];
+            this.presentAlert("Error", this.celularPutError);
+            console.log(this.celularPutError)
+          }
+        }else{
+        this.presentAlert("Error", "No se ha realizado el cambio");
+      }
+    }
+  );
+}
+
+eliminarTipoMascota(entidad: any) {
+  // Lógica para eliminar la entidad con el ID proporcionado
+  this.apiService.eliminarTipoMascota(entidad.id).subscribe(
+    () => {
+      // Eliminación exitosa
+      console.log('Tipo de mascota eliminado');
+      // Volver a cargar los datos
+      this.obtenerDatosEntidad('tipo_mascota');
+    },
+    (error) => {
+      // Error al eliminar el tipo de mascota
+      console.error(error);
+    }
+  );
+}
+
+editarTipoMascota(entidad: any) {
+  // Lógica para enviar la solicitud de modificación de la entidad con el ID proporcionado
+  this.apiService.editarTipoMascota(entidad).subscribe(
+    () => {
+      // Edición exitosa
+      console.log('Tipo de mascota editado');
+    },
+    (error) => {
+      // Error al editar el tipo de mascota
+      console.error(error);
+    }
+  );
+}
+
+
+
+
+// ...
+
+
+async mostrarMensajeRutNoEncontrado() {
+  const alert = await this.alertController.create({
+    header: 'RUT no encontrado',
+    message: 'El RUT no existe en la base de datos.',
+    buttons: [
+      {
+        text: 'OK',
+        handler: () => {
+          window.location.reload(); // Recargar la página
         }
-      ]
-    });
-  
-    await alert.present();
-  }
+      }
+    ]
+  });
 
+  await alert.present();
+}
 
+async presentAlert(title: string, message: string) {
+  const alert = await this.alertController.create({
+    header: title,
+    message: message,
+    buttons: [
+      {
+        text: 'OK',
+        handler: () => {
+          window.location.reload(); // Recargar la página
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
 
   // ...
 
