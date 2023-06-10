@@ -1,6 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title style="font-family: Arial, Helvetica, sans-serif;">Iniciar sesión</ion-title>
+    <div class="logo-container">
+      <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -8,7 +10,7 @@
   <ion-img style="padding-left: 6%;" src="/assets/imagenes/logo-petcuy.png"></ion-img>
   <form (submit)="submitForm()" [formGroup]="forgotForm" class="loginForm">
     <ion-item lines="full" *ngIf="forgotForm">
-      <ion-label style="font-family: helvetica;" position="floating">RUT</ion-label>
+      <ion-label style="font-family: helvetica;" position="floating">Rut</ion-label>
       <ion-input style="margin-top: 20px;" type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
     </ion-item>
     <ion-text style="margin-top: -10px; font-size: 14px; padding-left: 14px;  " color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
@@ -16,9 +18,9 @@
     </ion-text>
     
     <ion-item lines="full" *ngIf="forgotForm" class="password">
-      <ion-label style="margin-top: 30px; font-family: helvetica; font-size: 15px;" position="floating">CONTRASEÑA</ion-label>
+      <ion-label style="margin-top: 30px; font-family: helvetica; font-size: 15px;" position="floating">Contraseña</ion-label>
       <ion-input style="margin-top: 20px; font-family: helvetica;" type="{{ showPassword ? 'text' : 'password' }}" name="password" maxlength="20" formControlName="password" required></ion-input>
-      <ion-icon id="passwordEye"
+      <ion-icon style="margin-top: 35px; position: relative;" id="passwordEye"
       slot="end"
       name="{{ showPassword ? 'eye-off' : 'eye' }}"
       (click)="togglePasswordVisibility()"
@@ -28,12 +30,9 @@
     <ion-button class="ion-margin-top" expand="block" type="submit" [disabled]="forgotForm.invalid">INICIAR SESIÓN</ion-button>
   </form>
   <ion-item lines="none" class="olvidePass">
-    <a [routerLink]="['/olvide-contrasena']" style="font-size: 14px; text-decoration: none; font-family: helvetica;">¿OLVIDASTE TU CONTRASEÑA?</a>
-  </ion-item>
-  <ion-item lines="none" class="crearCuenta">
-    <p>¿NO TIENES CUENTA?</p> 
+    <a [routerLink]="['/olvide-contrasena']" style="font-size: 14px; text-decoration: none; font-family: helvetica;">Recuperar Contraseña</a>
   </ion-item>
   <ion-item lines="none" class="registrate">
-    <a style="text-decoration: none; font-family: helvetica;" [routerLink]="['/registro']">REGISTRATE</a>
+    <a style="text-decoration: none; font-family: helvetica;" [routerLink]="['/registro']">Regístrate</a>
   </ion-item>
 </ion-content>
