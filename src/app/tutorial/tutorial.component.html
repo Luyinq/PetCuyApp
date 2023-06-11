@@ -1,0 +1,27 @@
+<ion-content scrollY="false">
+  <swiper-container
+    #swiper
+    (afterinit)="swiperReady()"
+    (slidechange)="swiperSlideChanged($event)"
+    [pagination]="true"
+    [zoom]="true"
+  >
+    <swiper-slide *ngFor="let image of images">
+      <div class="swiper-zoom-container">
+        <img [src]="image" />
+      </div>
+    </swiper-slide>
+  </swiper-container>
+
+  <ion-buttons class="swiper-arrows">
+    <ion-button [style.visibility]="isFirstSlide ? 'hidden' : 'visible'" (click)="goPrev()">
+      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+    </ion-button>
+    <ion-button [style.visibility]="isLastSlide ? 'hidden' : 'visible'" (click)="goNext()">
+      <ion-icon slot="icon-only" name="arrow-forward"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="isLastSlide" (click)="handleOkButtonClick()">Listo</ion-button>
+  </ion-buttons>
+</ion-content>
+
+

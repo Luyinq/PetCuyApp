@@ -13,6 +13,7 @@ import { AnuncioFormComponent } from './formularios/anuncio-form/anuncio-form.co
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
 import { MisAnunciosComponent } from './menu/mis-anuncios/mis-anuncios.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
 
 
 const routes: Routes = [
@@ -82,8 +83,12 @@ const routes: Routes = [
     canActivate: [AuthGuardGuard]
   },
   {
+    path: 'tutorial',
+    component: TutorialComponent
+  },
+  {
     path: '',
-    redirectTo: 'login',
+    redirectTo: localStorage.getItem('tutorial') === 'true' ? 'home' : 'tutorial', // Redirect based
     pathMatch: 'full'
   },
 ];
