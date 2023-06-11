@@ -60,6 +60,7 @@ export class AnuncioFormComponent implements OnInit {
 
   
   listMascotaOptions() {
+    this.mascotaOptions = []; // Clear the array before making the API call
     this.api.listPets()
       .then((response: any[]) => {
         this.mascotaOptions = response;

@@ -4,6 +4,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './shared/api.service';
 import { environment } from 'src/environments/environment.prod';
+import { Geolocation } from '@capacitor/geolocation';
+import { AlertController } from '@ionic/angular';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-root',
@@ -19,12 +22,14 @@ export class AppComponent implements OnInit {
   profilePic: string = "assets/imagenes/profileNotFound.jpg";
 
 
-  constructor(private router: Router, private fb: FormBuilder, private http: HttpClient, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { 
+  constructor(private alert: AlertController, private router: Router, private fb: FormBuilder, private http: HttpClient, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { 
   }
 
   avatarClicked() {
     this.fileInput.nativeElement.click();
   }
+
+
 
   uploadImage(event: any) {
     const publicId = this.localStorage?.getItem('rut') || '';
@@ -57,6 +62,40 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.localStorage = window.localStorage;
     this.updateMenuAndProfilePic();
+    this.initializeApp();
+  }
+
+  async initializeApp() {
+    try {
+      const permissionStatus = await Geolocation.requestPermissions();
+      if (permissionStatus.location === 'granted') {
+        console.log('Permiso de geolocalización concedido');
+      } else {
+        const alert = await this.alert.create({
+          header: 'Permiso requerido',
+          message: 'Es necesario permitir el acceso a la geolocalización para usar la aplicación.',
+          buttons: [
+            {
+              text: 'Cerrar aplicación',
+              handler: () => {
+                this.closeApp();
+              }
+            }
+          ]
+        });
+        await alert.present();
+      }
+    } catch (error) {
+      console.error('Error al solicitar permisos de geolocalización:', error);
+    }
+  }
+
+  async closeApp() {
+    try {
+      await App.exitApp();
+    } catch (error) {
+      console.error('Error al cerrar la aplicación:', error);
+    }
   }
   
   updateMenuAndProfilePic() {

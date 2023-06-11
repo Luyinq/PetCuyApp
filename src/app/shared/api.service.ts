@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment.prod';
 import { SHA1 } from 'crypto-js';
 import { ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { LoadingController } from '@ionic/angular';
 
 
 @NgModule({
@@ -25,8 +26,18 @@ export class ApiService {
 
   rut: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private toastController: ToastController) { }
+  constructor(private loadingController: LoadingController, private http: HttpClient, private router: Router, private toastController: ToastController) { }
 
+  async showLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Cargando...',
+    });
+    await loading.present();
+  }
+
+  async dismissLoading() {
+    await this.loadingController.dismiss();
+  }
 
   async presentToast(message: string) {
     const toast = await this.toastController.create({
@@ -145,23 +156,27 @@ export class ApiService {
 
   getMyPets(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
-      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=` + localStorage.getItem('rut') + '/';
+      const rut = localStorage.getItem('rut');
+      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=${rut}/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-
+  
       this.http.get<any[]>(url, { headers }).subscribe(
         (response: any[]) => {
           // Obtener los nombres de tipo de mascota
           this.http.get<any[]>('https://luyinq.pythonanywhere.com/tipo_mascota/', { headers }).subscribe(
             (tipoMascotas: any[]) => {
+              // Filtrar solo las mascotas que pertenecen a tu RUT
+              const filteredPets = response.filter((mascota) => mascota.dueno === rut);
+  
               // Asignar el nombre de tipo correspondiente a cada mascota
-              response.forEach((mascota) => {
+              filteredPets.forEach((mascota) => {
                 const tipo = tipoMascotas.find((tipoMascota) => tipoMascota.id === mascota.tipo);
                 mascota.tipo = tipo ? tipo.nombre : 'Desconocido';
               });
-
-              resolve(response);
+  
+              resolve(filteredPets);
             },
             (error) => {
               reject(error);
@@ -177,22 +192,30 @@ export class ApiService {
 
   listPets(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
-      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=` + localStorage.getItem('rut') + '/';
+      const rut = localStorage.getItem('rut');
+      if (!rut) {
+        reject('Owner rut not found in localStorage.');
+        return;
+      }
+  
+      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=${rut}/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-
+  
       this.http.get<any[]>(url, { headers }).subscribe(
         (response: any[]) => {
-          resolve(response);
+          const filteredPets = response.filter(pet => pet.dueno === rut);
+          resolve(filteredPets);
         },
         (error) => {
           reject(error);
         }
       );
-    },
-    );
+    });
   }
+  
+  
 
   listTipoAnuncio(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
@@ -256,22 +279,22 @@ export class ApiService {
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
-  
+
       this.http.get<any[]>(url, { headers }).subscribe(
         async (response: any[]) => {
           const anunciosWithPosicion: any[] = [];
-  
+
           const posiciones = await this.http.get<any[]>('https://luyinq.pythonanywhere.com/posicion/', { headers }).toPromise();
-  
+
           for (const anuncio of response) {
             const mascota = await this.http.get<any>('https://luyinq.pythonanywhere.com/mascota/' + anuncio.mascota + '/', { headers }).toPromise();
-            
+
             anuncio.mascota = mascota; // Assign the "mascota" property to the ad and assign the mascot information
-  
+
             if (posiciones && posiciones.length > 0) {
               // Filter the specific position associated with the ad
               const posicionAnuncio = posiciones.find((pos) => pos.anuncio === anuncio.id);
-  
+
               if (posicionAnuncio) {
                 anuncio.posicion = posicionAnuncio;
               } else {
@@ -280,11 +303,11 @@ export class ApiService {
             } else {
               anuncio.posicion = null;
             }
-  
+
             anunciosWithPosicion.push(anuncio);
           }
-          
-  
+
+
           resolve(anunciosWithPosicion);
         },
         (error) => {
@@ -293,8 +316,8 @@ export class ApiService {
       );
     });
   }
-  
-  
+
+
 
 
   createAnuncio(descripcion: string, categoria: number, mascota: number): Observable<any> {
@@ -326,8 +349,145 @@ export class ApiService {
     const headers = new HttpHeaders().set('Authorization', `Token ${token}`);
     return this.http.post('https://luyinq.pythonanywhere.com/posicion/', body, { headers });
   }
-  
 
+
+  // saveTokenMsg method
+  saveTokenMsg(msgToken: string): Observable<any> {
+    const apiUrl = 'https://luyinq.pythonanywhere.com/usuario/' + localStorage.getItem('rut') + '/';
+    const body = {
+      msgToken: msgToken
+    };
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('Authorization', 'Token ' + localStorage.getItem('token'));
+
+    return this.http.put(apiUrl, body, { headers });
+  }
+
+
+  async sendMessageWithFCM(deviceToken: string, title: string, body: string): Promise<void> {
+    const url = 'https://fcm.googleapis.com/fcm/send';
+    const serverKey = environment.CloudMessage.serverKey
+    console.log(serverKey)
+  
+    // Set the headers with the necessary authorization and content type
+    const headers = new HttpHeaders({
+      'Authorization': `key=${serverKey}`,
+      'Content-Type': 'application/json'
+    });
+  
+    // Set the message payload
+    const payload = {
+      'to': deviceToken,
+      'notification': {
+        'title': title,
+        'body': body
+      }
+    };
+  
+    try {
+      // Send the HTTP POST request to the FCM API
+      await this.http.post(url, payload, { headers }).toPromise();
+      console.log('Message sent successfully!');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  }
+
+
+  async getAnunciosByRut(rut: string): Promise<any[]> {
+    return new Promise<any[]>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/anuncio/?autor=${rut}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+  
+      this.http.get<any[]>(url, { headers }).subscribe(
+        async (response: any[]) => {
+          const anuncios: any[] = [];
+  
+          for (const anuncio of response) {
+            const mascota = await this.http.get<any>('https://luyinq.pythonanywhere.com/mascota/' + anuncio.mascota + '/', { headers }).toPromise();
+  
+            anuncio.mascota = mascota; // Assign the "mascota" property to the ad and assign the mascot information
+            anuncio.tipo = await this.getTipoAnuncio(anuncio.tipo); // Get the string representation of the ad type
+  
+            console.log(anuncio)
+            if (!anuncio.isDeleted) {
+              anuncios.push(anuncio);
+            }
+          }
+  
+          resolve(anuncios);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+  
+  
+  async getTipoAnuncio(id: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/tipo_anuncio/${id}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+  
+      this.http.get<any>(url, { headers }).subscribe(
+        (response: any) => {
+          resolve(response.nombre); // Return the "nombre" property of the ad type
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  async deleteAnuncio(id: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/anuncio/${id}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+  
+      this.http.delete(url, { headers }).subscribe(
+        () => {
+          resolve(); // Resolves the promise if the deletion is successful
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+
+  async deleteContacto(id: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/anuncio/${id}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+    
+      const body = {
+        contacto: null
+      };
+  
+      this.http.put(url, body, { headers }).subscribe(
+        () => {
+          resolve(); // Resolves the promise if the update is successful
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+  
+  
 
 
 

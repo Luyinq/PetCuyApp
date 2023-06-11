@@ -11,9 +11,13 @@ import { FormGroupDirective } from '@angular/forms'; // Import FormGroupDirectiv
 import { ApiService } from '../shared/api.service';
 import { VerAnuncioComponent } from './ver-anuncio/ver-anuncio.component';
 import { DatePipe } from '@angular/common';
+import { MisAnunciosComponent } from './mis-anuncios/mis-anuncios.component';
+import { TutorialComponent } from '../tutorial/tutorial.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 
 @NgModule({
-  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent],
+  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent, MisAnunciosComponent, TutorialComponent],
   imports: [
     CommonModule,
     IonicModule,
@@ -22,5 +26,6 @@ import { DatePipe } from '@angular/common';
     RouterModule,
   ],
   providers: [FormGroupDirective, ApiService, DatePipe], // Add FormGroupDirective to providers
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MenuModule { }
