@@ -39,3 +39,19 @@ ion-label{
   padding-right: 0%;
 }
 
+.center-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 62vh; /* Opcional: ajusta la altura según tus necesidades */
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px; /* Espacio entre los botones */
+}

@@ -20,6 +20,11 @@ export class AdmincrudComponent  implements OnInit {
   celularPutError!: string;
   datosOriginales: any[] = []; // Variable para almacenar los datos originales
 
+  campoEditado: string = '';
+  valorOriginal: string = '';
+  cambiosRealizados: { campo: string, valorOriginal: string, valorNuevo: string }[] = [];
+
+
 
   updateForm = new FormGroup({
     nombre: new FormControl('',[Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
@@ -143,6 +148,7 @@ editarUsuario(entidad: any) {
       // Edición exitosa
       console.log('Usuario editado');
       this.obtenerDatosEntidad('usuario');
+      this.mostrarAlertaModificacion(data);
     },
     (error) => {
       // Error al editar el usuario
@@ -172,6 +178,57 @@ editarUsuario(entidad: any) {
     }
   );
 }
+
+mostrarCampoEditado(campo: string, valor: string) {
+  const cambioRealizado = this.cambiosRealizados.find(cambio => cambio.campo === campo);
+
+  if (cambioRealizado) {
+    cambioRealizado.valorNuevo = valor;
+  } else {
+    this.cambiosRealizados.push({ campo: campo, valorOriginal: valor, valorNuevo: valor });
+  }
+}
+
+mostrarAlertaModificacion(data: any) {
+  const cambiosRealizados: { campo: string, valorOriginal: string, valorNuevo: string }[] = [];
+
+  let valorNuevo: string = ''; // Valor predeterminado
+
+  this.cambiosRealizados.forEach(cambio => {
+    if (cambio.campo === 'Nombre') {
+      valorNuevo = data.nombre;
+    } else if (cambio.campo === 'Apellido') {
+      valorNuevo = data.apellido;
+    } else if (cambio.campo === 'Correo') {
+      valorNuevo = data.correo;
+    } else if (cambio.campo === 'Celular') {
+      valorNuevo = data.celular;
+    }
+
+    if (valorNuevo !== cambio.valorOriginal) {
+      cambiosRealizados.push({
+        campo: cambio.campo,
+        valorOriginal: cambio.valorOriginal,
+        valorNuevo: valorNuevo
+      });
+    }
+  });
+
+  if (cambiosRealizados.length > 0) {
+    let mensaje = '\n\n';
+    cambiosRealizados.forEach(cambio => {
+      mensaje += `${cambio.campo}: ${cambio.valorOriginal} --> ${cambio.valorNuevo}\n`;
+    });
+    this.presentAlert('Modificación Exitosa', mensaje);
+  }
+}
+
+
+
+
+
+
+
 
 eliminarTipoMascota(entidad: any) {
   // Lógica para eliminar la entidad con el ID proporcionado
