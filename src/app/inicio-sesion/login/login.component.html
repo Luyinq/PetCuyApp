@@ -28,7 +28,7 @@
     </ion-item>
   </form>
   <br>
-  <ion-button class="transparent-button" expand="block" type="submit" [disabled]="forgotForm.invalid">INICIAR SESIÓN</ion-button>
+  <ion-button class="transparent-button" expand="block" type="submit" [disabled]="forgotForm.invalid" (click)="submitForm()">INICIAR SESIÓN</ion-button>
   <ion-item lines="none" class="olvidePass">
     <a [routerLink]="['/olvide-contrasena']" style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #217E94; padding-left: 4px">Recuperar Contraseña</a>
   </ion-item>
