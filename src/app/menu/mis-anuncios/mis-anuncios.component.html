@@ -4,14 +4,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-text *ngIf="!anuncios && !loading" class="no-pets-text">
-    No has creado ningún anuncio.
-  </ion-text>
+<ion-tab-bar slot="top">
+  <ion-tab-button tab="buscar" (ionTabButtonClick)="changeTab('buscar')">
+    <ion-label>Buscar</ion-label>
+  </ion-tab-button>
+  <ion-tab-button tab="adoptar" (ionTabButtonClick)="changeTab('adoptar')">
+    <ion-label>Adoptar</ion-label>
+  </ion-tab-button>
+  <ion-tab-button tab="contacto" (ionTabButtonClick)="changeTab('contacto')">
+    <ion-label>Contacto</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>
 
-  <div *ngIf="anuncios && !loading" class="content-container">
+<ion-content *ngIf="selectedTab === 'buscar'">
+  <ion-text *ngIf="!anunciosBuscar || anunciosBuscar.length === 0" class="no-pets-text">
+    No has creado ningún anuncio de búsqueda.
+  </ion-text>
+  <div *ngIf="anunciosBuscar" class="content-container">
     <ion-list>
-      <ion-item style="margin-top: 10px;" *ngFor="let anuncio of anuncios" class="custom-item">
+      <ion-item style="margin-top: 10px;" *ngFor="let anuncio of anunciosBuscar" class="custom-item">
         <ion-thumbnail slot="start" class="pet-thumbnail">
           <ion-img [src]="anuncio.mascota.foto_1" alt="Pet Image"></ion-img>
         </ion-thumbnail>
@@ -30,8 +41,15 @@
           </ion-item>
           <ion-item>
             <ion-label class="custom-label">Contacto:</ion-label>
-            <ion-button (click)="gotoPerfil(anuncio.contacto)" *ngIf="anuncio.contacto" slot="end" shape="round" fill="solid" color="tertiary" style="text-transform: none;">Ver &nbsp;<ion-icon name="search"></ion-icon></ion-button>
             <ion-note *ngIf="!anuncio.contacto" slot="end">No posee</ion-note>
+            <ion-buttons *ngIf="anuncio.contacto" class="ion-buttons-centered">
+              <ion-button (click)="gotoPerfil(anuncio.contacto)" color="tertiary" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="search"></ion-icon>
+              </ion-button>
+              <ion-button (click)="deleteContacto(anuncio.id)" color="danger" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="trash" style="color: white;"></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-item>
           <br>
           <ion-buttons class="ion-buttons-centered">
@@ -39,6 +57,106 @@
               <ion-icon name="trash" class="icon-medium" style="color: white;"></ion-icon>
             </ion-button>
             <ion-button (click)="gotoAnuncio(anuncio.id)" color="primary" class="button-large custom-button" >
+              <ion-icon style="color:white;" name="eye"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+
+<ion-content *ngIf="selectedTab === 'adoptar'">
+  <ion-text *ngIf="!anunciosAdoptar || anunciosAdoptar.length === 0" class="no-pets-text">
+    No has creado ningún anuncio de adopción.
+  </ion-text>
+  <div *ngIf="anunciosAdoptar" class="content-container">
+    <ion-list>
+      <ion-item style="margin-top: 10px;" *ngFor="let anuncio of anunciosAdoptar" class="custom-item">
+        <ion-thumbnail slot="start" class="pet-thumbnail">
+          <ion-img [src]="anuncio.mascota.foto_1" alt="Pet Image"></ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-item>
+            <ion-label class="custom-label">Mascota:</ion-label>
+            <ion-note slot="end">{{ anuncio.mascota.nombre }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Tipo:</ion-label>
+            <ion-note slot="end">{{ anuncio.tipo }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Fecha:</ion-label>
+            <ion-note slot="end">{{ datePipe.transform(anuncio.fecha, 'dd/MM/yyyy') }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Contacto:</ion-label>
+            <ion-note *ngIf="!anuncio.contacto" slot="end">No posee</ion-note>
+            <ion-buttons *ngIf="anuncio.contacto" class="ion-buttons-centered">
+              <ion-button (click)="gotoPerfil(anuncio.contacto)" color="tertiary" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="search"></ion-icon>
+              </ion-button>
+              <ion-button (click)="deleteContacto(anuncio.id)" color="danger" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="trash" style="color: white;"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          
+          <br>
+          <ion-buttons class="ion-buttons-centered">
+            <ion-button (click)="deleteAnuncio(anuncio.id)" color="danger" class="button-large custom-button" >
+              <ion-icon name="trash" class="icon-medium" style="color: white;"></ion-icon>
+            </ion-button>
+            <ion-button (click)="gotoAnuncio(anuncio.id)" color="primary" class="button-large custom-button" >
+              <ion-icon style="color:white;" name="eye"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-content *ngIf="selectedTab === 'contacto'">
+  <ion-text *ngIf="!anunciosContacto || anunciosContacto.length === 0" class="no-pets-text">
+    No existen anuncios en donde estés participando.
+  </ion-text>
+  <div *ngIf="anunciosContacto" class="content-container">
+    <ion-list>
+      <ion-item style="margin-top: 10px;" *ngFor="let anuncio of anunciosContacto" class="custom-item">
+        <ion-thumbnail slot="start" class="pet-thumbnail">
+          <ion-img [src]="anuncio.mascota.foto_1" alt="Pet Image"></ion-img>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-item>
+            <ion-label class="custom-label">Mascota:</ion-label>
+            <ion-note slot="end">{{ anuncio.mascota.nombre }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Tipo:</ion-label>
+            <ion-note slot="end">{{ anuncio.tipo }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Fecha:</ion-label>
+            <ion-note slot="end">{{ datePipe.transform(anuncio.fecha, 'dd/MM/yyyy') }}</ion-note>
+          </ion-item>
+          <ion-item>
+            <ion-label class="custom-label">Contacto:</ion-label>
+            <ion-note *ngIf="!anuncio.contacto" slot="end">No posee</ion-note>
+            <ion-buttons *ngIf="anuncio.contacto" class="ion-buttons-centered">
+              <ion-button (click)="gotoPerfil(anuncio.autor)" color="tertiary" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="search"></ion-icon>
+              </ion-button>
+              <ion-button (click)="deleteContacto(anuncio.id)" color="danger" shape="round" fill="solid" style="text-transform: none;">
+                <ion-icon name="trash" style="color: white;"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+          
+          <br>
+          <ion-buttons class="ion-buttons-centered">
+            <ion-button (click)="gotoAnuncio(anuncio.id)" color="primary" class="button-large large-button" expand="block">
               <ion-icon style="color:white;" name="eye"></ion-icon>
             </ion-button>
           </ion-buttons>

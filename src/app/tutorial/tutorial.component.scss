@@ -1,0 +1,40 @@
+swiper-container {
+    width: 100%;
+    height: 100vh;
+  }
+   
+  swiper-slide {
+    display: flex;
+    flex-direction: row; /* Cambia la dirección del flujo a horizontal */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swiper-arrows {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 16px;
+    z-index: 999; /* Ajusta el valor de z-index según sea necesario */
+  }
+  
+
+  
+  
+  swiper-slide img {
+    width: 100%; /* Ajusta el tamaño de las imágenes */
+    height: 100%; /* Utiliza el 100% de la altura del slide */
+    object-fit: cover; /* Ajusta el ajuste de la imagen según sea necesario */
+  }
+  
+
+  swiper-container {
+    width: 100%;
+    height: 100%;
+   
+    --swiper-pagination-bullet-inactive-color: var(--ion-color-step-200, #cccccc);
+    --swiper-pagination-color: var(--ion-color-primary, #3880ff);
+  }

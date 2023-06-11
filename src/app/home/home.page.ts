@@ -45,7 +45,32 @@ export class HomePage implements AfterViewInit, OnDestroy {
   currentPositionSubscription: any;
   gotoAnuncioButton: boolean = false;
   selectedAnnouncementId: number | null = null;
-
+  styles = [
+    {
+      "elementType": "labels",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.neighborhood",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    }
+  ]
 
   constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
     const nombre = localStorage.getItem('nombre');
@@ -222,6 +247,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
         center: center,
         zoom: 20,
         disableDefaultUI: true,
+        styles : this.styles
       },
       forceCreate: true
     });
@@ -344,10 +370,10 @@ export class HomePage implements AfterViewInit, OnDestroy {
           {
             center: { lat: lat, lng: lng },
             radius: 100,
-            fillColor: 'blue',
-            fillOpacity: 0.1,
-            strokeColor: 'blue',
-            strokeWeight: 1,
+            fillColor: 'yellow',
+            fillOpacity: 0.2,
+            strokeColor: 'yellow',
+            strokeWeight: 5,
             clickable: false
           }
         ];
