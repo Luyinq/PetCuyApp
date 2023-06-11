@@ -67,8 +67,11 @@
   }
 
 ion-content{
+    background: transparent url('.../../assets/imagenes/fondowenodos.jpg') no-repeat center center / cover;
+    background-size: cover;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: aquamarine;
+    --ion-background-color: transparent;
+    
 }
 
 .logo-container {
@@ -88,4 +91,41 @@ ion-content{
     position: fixed;
     
   }
+
+.transparent-button {
+
+    --background: rgba(70, 193, 202, 0.445);
+    --color: #002d4b;
+    --border-color: rgb(23, 102, 155);
+    font-weight: bold;
+  
+  }
+
+.box-container {
+    background-color: #aee1ff9f;
+    border: 1px solid #d2f8f3d2;
+    padding: 10px;
+    border-radius: 5%;
+    width: 99%;
+    margin-top: -30px;
+  
+  }
+
+.center-container {
+    height: 100vh;
+    padding-left: 5px;
+  }
+
+
+
+.full-width-text {
+    width: 200%;
+    margin: 0;
+  }
+  
+.itemRut{
+  padding-top: 40px;
+}
+
+
 

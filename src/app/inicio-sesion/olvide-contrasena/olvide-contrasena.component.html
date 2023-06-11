@@ -3,29 +3,37 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Olvidé mi contraseña</ion-title>
+    <div class="logo-container">
+      <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+    </div>
   </ion-toolbar>
 </ion-header>
 
   
   <ion-content [fullscreen]="true">
-  
+    <ion-img style="padding-left: 6%;" src="/assets/imagenes/logoweno.png"></ion-img>
     <div id="container">
-      <div class="container">
-          <p>Ingrese su rut para reestablecer su contraseña.<br>
-            Se entregará una contraseña provisional, es recomendable establecer una propia.
-          </p>      
-          <form (submit)="submitForm()" [formGroup]="forgotForm">
-            <ion-item lines="full" *ngIf="forgotForm">
-              <ion-label position="floating">Rut</ion-label>
-              <ion-input type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
-              <div>{{ getErrorMessage('rut') }}</div>
+      <div class="center-container">
+        <div class="box-container">
+          <ion-item lines="none">
+          <p class="full-width-text" style="font-size: 12px; text-decoration: none; font-family: helvetica; color: #0e3c79; padding-left: 14px;">
+          -Ingrese su rut para reestablecer contraseña.<br>
+          -Se entregará una contraseña provisional.<br>
+          -Se recomienda establecer una propia.
+          </p> 
+          </ion-item>
+        </div> 
+      <form (submit)="submitForm()" [formGroup]="forgotForm">
+        <ion-item class="itemRut" lines="full" *ngIf="forgotForm">
+          <ion-label style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #0e3c79;" position="floating">RUT</ion-label>
+          <ion-input type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
+        </ion-item>
+          <ion-text color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
+            <div>{{ getErrorMessage('rut') }}</div>
             </ion-text>
           <ion-row>
             <ion-col>
-              <ion-button type="submit" [disabled]="forgotForm.invalid">Enviar</ion-button>
+            <ion-button class="transparent-button" style="padding-left: 130px; padding-top: 10px" type="submit" [disabled]="forgotForm.invalid">Enviar</ion-button>
             </ion-col>
           </ion-row>
         </form>
