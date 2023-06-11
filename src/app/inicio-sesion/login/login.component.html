@@ -11,28 +11,34 @@
   <form (submit)="submitForm()" [formGroup]="forgotForm" class="loginForm">
     <ion-item lines="full" *ngIf="forgotForm">
       <ion-label style="font-family: helvetica; color: #217E94" position="floating">Rut</ion-label>
-      <ion-input style="margin-top: 20px;" type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9"></ion-input>
+      <ion-input style="margin-top: 20px;" type="text" name="rut" placeholder="Sin puntos ni guión"
+        formControlName="rut" maxlength="9"></ion-input>
     </ion-item>
-    <ion-text style="font-size: 14px; padding-left: 14px;" color="danger" *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
+    <ion-text style="font-size: 14px; padding-left: 14px;" color="danger"
+      *ngIf="forgotForm.get('rut')?.invalid && forgotForm.get('rut')?.touched">
       {{ getErrorMessage('rut') }}
     </ion-text>
-    
+
     <ion-item lines="full" *ngIf="forgotForm" class="password">
-      <ion-label style="margin-top: 30px; font-family: helvetica; font-size: 15px; color: #217E94" position="floating">Contraseña</ion-label>
-      <ion-input style="margin-top: 20px; font-family: helvetica;" type="{{ showPassword ? 'text' : 'password' }}" name="password" maxlength="20" formControlName="password" required></ion-input>
-      <ion-icon style="margin-top: 35px; position: relative;" id="passwordEye"
-      slot="end"
-      name="{{ showPassword ? 'eye-off' : 'eye' }}"
-      (click)="togglePasswordVisibility()"
-    ></ion-icon>
+      <ion-label style="margin-top: 30px; font-family: helvetica; font-size: 15px; color: #217E94"
+        position="floating">Contraseña</ion-label>
+      <ion-input style="margin-top: 20px; font-family: helvetica;" type="{{ showPassword ? 'text' : 'password' }}"
+        name="password" maxlength="20" formControlName="password" required></ion-input>
+      <ion-icon style="margin-top: 35px; position: relative;" id="passwordEye" slot="end"
+        name="{{ showPassword ? 'eye-off' : 'eye' }}" (click)="togglePasswordVisibility()"></ion-icon>
     </ion-item>
   </form>
   <br>
-  <ion-button class="transparent-button" expand="block" type="submit" [disabled]="forgotForm.invalid" (click)="submitForm()">INICIAR SESIÓN</ion-button>
-  <ion-item lines="none" class="olvidePass">
-    <a [routerLink]="['/olvide-contrasena']" style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #217E94; padding-left: 4px">Recuperar Contraseña</a>
-  </ion-item>
-  <ion-item lines="none" class="registrate">
-    <a style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #217E94; font-style: bold; padding-left: 14px" [routerLink]="['/registro']">Regístrate</a>
-  </ion-item>
+  <ion-button class="transparent-button" expand="block" type="submit" [disabled]="forgotForm.invalid"
+    (click)="submitForm()">INICIAR SESIÓN</ion-button>
+  <div class="container">
+
+    <a [routerLink]="['/olvide-contrasena']"
+      style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #217E94;">Recuperar Contraseña</a>
+
+    <br>
+    <a style="font-size: 15px; text-decoration: none; font-family: helvetica; color: #217E94; font-style: bold;"
+      [routerLink]="['/registro']">Regístrate</a>
+
+  </div>
 </ion-content>
