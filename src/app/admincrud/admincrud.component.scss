@@ -1,12 +1,51 @@
+ion-toggle {
+  padding: 12px;
+
+  --handle-width: 20px;
+  --handle-height: 20px;
+  --handle-max-height: auto;
+  --handle-spacing: 6px;
+
+  contain: none;
+}
+
+ion-toggle::part(track),
+ion-toggle.toggle-checked::part(track) {
+  height: 10px;
+  width: 55px;
+
+  background: #ddd;
+
+  /* Required for iOS handle to overflow the height of the track */
+  overflow: visible;
+}
+
+ion-toggle::part(handle) {
+  background: #eb7769;
+
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+ion-toggle.toggle-checked::part(handle) {
+  background: #95c34e;
+}
+
 .users-info-card {
   background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 6px 6px rgba(0, 0, 0, 0.2);
+  
 }
 
 .titulo {
   text-align: center;
   padding-top: 16px;
   font-weight: bold;
+}
+.sticky-search {
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 .data-container {
   display: flex;
@@ -39,13 +78,7 @@ ion-label{
   padding-right: 0%;
 }
 
-.center-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 62vh; /* Opcional: ajusta la altura según tus necesidades */
-}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -54,4 +87,17 @@ ion-label{
 .button-row {
   display: flex;
   gap: 8px; /* Espacio entre los botones */
+}
+.data-form-tipo {
+  display: flex;
+  justify-content: center;
+  padding-top: 5%;
+}
+
+.img-mascota {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5%;
+  padding-top: 5%;
 }

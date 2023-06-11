@@ -78,14 +78,21 @@ export class AdmincrudComponent  implements OnInit {
       this.apiService.getUrlData(entidad).subscribe((response: any) => {
         this.datosOriginales = Object.entries(response).map(([key, value]) => value);
         this.datos = this.datosOriginales.filter((dato: any) => dato.rut !== rutLocalStorage);
+        this.actualizarEstadoToggle();
         console.log(this.datos);
       });
     } else {
       this.apiService.getUrlData(entidad).subscribe((response: any) => {
         this.datosOriginales = Object.entries(response).map(([key, value]) => value);
         this.datos = this.datosOriginales;
+        this.actualizarEstadoToggle();
         console.log(this.datos);
       });
+    }
+  }
+  actualizarEstadoToggle() {
+    for (const entidad of this.datos) {
+      entidad.isAdminToggle = entidad.isAdmin;
     }
   }
 
@@ -95,7 +102,19 @@ export class AdmincrudComponent  implements OnInit {
   esAdminTipo_mascotaURL(): boolean {
     return window.location.href.includes('/admin/tipo_mascota');
   }
-  
+  esAdminTipo_anuncioURL(): boolean {
+    return window.location.href.includes('/admin/tipo_anuncio');
+  }
+  esAdminEstadoURL(): boolean {
+    return window.location.href.includes('/admin/estado');
+  }
+  esAdminMascotaURL(): boolean {
+    return window.location.href.includes('/admin/mascota');
+  }
+  esAdminAnuncioURL(): boolean {
+    return window.location.href.includes('/admin/anuncio');
+  }
+
   async eliminarUsuario(entidad: any) {
     const rut = entidad.rut; // Obtén el rut del objeto 'entidad'
   
@@ -158,22 +177,27 @@ editarUsuario(entidad: any) {
           if (error.error.error.details.nombre) {
             this.nombrePutError = error.error.error.details.nombre[0];
             this.presentAlert("Error", this.nombrePutError);
+            this.obtenerDatosEntidad('usuario');
           }
           if (error.error.error.details.apellido){
             this.apellidoPutError = error.error.error.details.apellido[0];
             this.presentAlert("Error", this.apellidoPutError);
+            this.obtenerDatosEntidad('usuario');
           }
           if (error.error.error.details.correo){
             this.correoPutError = error.error.error.details.correo[0];
             this.presentAlert("Error", this.correoPutError);
+            this.obtenerDatosEntidad('usuario');
           }
           if (error.error.error.details.celular){
             this.celularPutError = error.error.error.details.celular[0];
             this.presentAlert("Error", this.celularPutError);
             console.log(this.celularPutError)
+            this.obtenerDatosEntidad('usuario');
           }
         }else{
         this.presentAlert("Error", "No se ha realizado el cambio");
+        this.obtenerDatosEntidad('usuario');
       }
     }
   );
@@ -220,44 +244,118 @@ mostrarAlertaModificacion(data: any) {
       mensaje += `${cambio.campo}: ${cambio.valorOriginal} --> ${cambio.valorNuevo}\n`;
     });
     this.presentAlert('Modificación Exitosa', mensaje);
+    this.obtenerDatosEntidad('usuario');
   }
 }
 
+cambiarAdminUsuario(entidad:any) {
+  entidad.isAdmin = !entidad.isAdmin; // Cambia el estado de isAdmin
+  console.log(entidad.isAdmin)
 
+  const rut = entidad.rut; // Obtén el rut del objeto 'entidad'
+  const data = {
+    isAdmin: entidad.isAdmin as boolean // Agrega la propiedad 'isAdmin' al objeto 'data'
+  };
 
-
-
-
-
-
-eliminarTipoMascota(entidad: any) {
-  // Lógica para eliminar la entidad con el ID proporcionado
-  this.apiService.eliminarTipoMascota(entidad.id).subscribe(
+  // Enviar solicitud a la API para actualizar el estado de administrador del usuario
+  this.apiService.editarUsuario(rut, data).subscribe(
     () => {
-      // Eliminación exitosa
-      console.log('Tipo de mascota eliminado');
-      // Volver a cargar los datos
-      this.obtenerDatosEntidad('tipo_mascota');
+      // Edición exitosa
+      console.log('Estado de administrador cambiado');
+      if(entidad.isAdmin == true){
+        this.presentAlert('Cambio exitoso', 'Has convertido al usuario '+entidad.nombre+' en administrador.');
+        this.obtenerDatosEntidad('usuario');
+      }else{
+        this.presentAlert('Cambio exitoso', 'El usuario '+entidad.nombre+' ya no es administrador.');
+        this.obtenerDatosEntidad('usuario');
+      }
+      
     },
     (error) => {
-      // Error al eliminar el tipo de mascota
+      // Error al editar el usuario
       console.error(error);
+      this.presentAlert("Error", "No se ha realizado el cambio");
+      this.obtenerDatosEntidad('usuario');
     }
   );
 }
 
-editarTipoMascota(entidad: any) {
-  // Lógica para enviar la solicitud de modificación de la entidad con el ID proporcionado
-  this.apiService.editarTipoMascota(entidad).subscribe(
-    () => {
-      // Edición exitosa
-      console.log('Tipo de mascota editado');
-    },
-    (error) => {
-      // Error al editar el tipo de mascota
-      console.error(error);
-    }
-  );
+
+
+
+
+
+async eliminarTipoMascota(entidad: any) {
+  const mascota = entidad.id; // Obtén el rut del objeto 'entidad'
+  
+  const alert = await this.alertController.create({
+    header: 'Confirmar eliminación',
+    message: '¿Estás seguro de eliminar este tipo de mascota: '+'"'+entidad.nombre+'"'+' de manera permanente?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Eliminación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.eliminarTipoMascota(mascota).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Tipo de mascota eliminado');
+              this.obtenerDatosEntidad('tipo_mascota');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+  
+}
+
+async editarTipoMascota(entidad: any) {
+  const alert = await this.alertController.create({
+    header: 'Confirmar edición',
+    message: '¿Estás seguro de editar este tipo de mascota: '+'"'+entidad.nombre+'"'+' ?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          this.obtenerDatosEntidad('tipo_mascota');
+          console.log('Edición cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.editarTipoMascota(entidad).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Tipo de mascota editado');
+              this.obtenerDatosEntidad('tipo_mascota');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+
 }
 
 
@@ -291,7 +389,7 @@ async presentAlert(title: string, message: string) {
       {
         text: 'OK',
         handler: () => {
-          window.location.reload(); // Recargar la página
+           // Recargar la página
         }
       }
     ]
@@ -319,7 +417,7 @@ filtrarDatos() {
 
   const filtro = filtroActual.toLowerCase();
   const resultados = this.datosOriginales.filter((dato: any) =>
-    dato.rut.toLowerCase().startsWith(filtro)
+    dato.rut.toLowerCase().startsWith(filtro) && dato.rut !== localStorage.getItem('rut')
   );
 
   if (resultados.length === 0) {

@@ -484,6 +484,7 @@ export class ApiService {
       );
     });
   }
+
   eliminarUsuario(rut: string): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com/usuario';
     const url = `${baseUrl}/${rut}/`; // Agrega el rut en la URL para eliminar el usuario
@@ -508,14 +509,98 @@ export class ApiService {
   }
 
   editarTipoMascota(tipoMascota: any): Observable<any> {
-    const baseUrl = 'https://luyinq.pythonanywhere.com/';
-    const url = `${baseUrl}/tipo_mascota/${tipoMascota.id}`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
-    return this.http.put(url, tipoMascota);
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_mascota/${tipoMascota.id}/`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.put(url, tipoMascota, { headers });
   }
   eliminarTipoMascota(id: string): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
-    const url = `${baseUrl}/tipo_mascota/${id}`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
-    return this.http.delete(url);
+    const url = `${baseUrl}/tipo_mascota/${id}/`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.delete(url, { headers });
+  }
+
+  editarTipoAnuncio(tipoAnuncio: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_anuncio/${tipoAnuncio.id}/`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.put(url, tipoAnuncio, { headers });
+  }
+  eliminarTipoAnuncio(id: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_anuncio/${id}/`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.delete(url, { headers });
+  }
+
+  editarEstado(estado: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/estado/${estado.id}/`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.put(url, estado, { headers });
+  }
+  eliminarEstado(id: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/estado/${id}/`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.delete(url, { headers });
+  }
+
+  editarMascota(mascota: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/mascota/${mascota.id}/`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.put(url, mascota, { headers });
+  }
+  eliminarMascota(id: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/mascota/${id}/`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.delete(url, { headers });
+  }
+
+  editarAnuncio(anuncio: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/anuncio/${anuncio.id}/`; // Reemplaza la URL con la ruta correspondiente para editar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.put(url, anuncio, { headers });
+  }
+  eliminarAnuncio(id: string): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/anuncio/${id}/`; // Reemplaza la URL con la ruta correspondiente para eliminar un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.delete(url, { headers });
   }
 
 }
