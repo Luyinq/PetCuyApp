@@ -25,6 +25,12 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+
+.ion-content-fondo {
+  --background: transparent url('.../../assets/imagenes/fondowenodos.jpg') no-repeat center center / cover;
+  --ion-background-color: transparent;
+}
+
 #passwordEye {
     position: absolute; 
     right: 5px; 
@@ -75,6 +81,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #5ab1d9;
+    border: transparent;
   }
   
   .logo-container img {
@@ -82,6 +90,7 @@
     max-height: 250%;
     padding-top: 14px;
     position: fixed;
+    background-color: transparent;
     
   }
 
@@ -120,5 +129,39 @@
   padding-top: 40px;
 }
 
+.ion-toolbar-fondo{
+  --border-color: #5ab1d9;
+  --border-width: none;
+} 
 
+.registerForm{
+  width: 100%;
+  ion-item{
+    color: #217E94;
+    margin-top: 15px;
+  }
+}
 
+ion-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #b6eaff;
+
+  ion-button {
+    width: 200%;
+    height: 60px;
+  }
+
+  ion-button img {
+    padding-top: 5px;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  
+}
