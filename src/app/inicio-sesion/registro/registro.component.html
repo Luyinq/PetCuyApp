@@ -1,18 +1,20 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="ion-toolbar-fondo">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button style="color: #1a4c75; background: #5ab1d9;"></ion-back-button>
     </ion-buttons>
-    <ion-title>Registro</ion-title>
+    <div class="logo-container">
+      <img style="padding-left: 10px;" class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-content-fondo">
 
   <div id="container">
     <div class="container">
-        <p>Ingrese sus datos<br>
-        <form (submit)="submitForm()" [formGroup]="registerForm">
+        <p style="font-style: bold; color: #217E94;">Ingrese sus datos<br>
+        <form (submit)="submitForm()" [formGroup]="registerForm" class="registerForm">
           <ion-item lines="full" *ngIf="registerForm">
             <ion-label position="floating">Rut</ion-label>
             <ion-input type="text" name="rut" placeholder="Sin puntos ni guión" formControlName="rut" maxlength="9" (focus)="resetErrorVariable('rut')"></ion-input>
@@ -58,7 +60,7 @@
             <ion-input type="text" name="celular" placeholder="912341234" formControlName="celular" minlength="9" maxlength="9" (focus)="resetErrorVariable('celular')"></ion-input>
           </ion-item>
           <ion-text color="danger" *ngIf="registerForm.get('celular')?.invalid && registerForm.get('celular')?.touched">
-            <div><p>Número no valido</p></div>
+            <div><p>Número invalido</p></div>
           </ion-text>
           <ion-text color="danger" *ngIf="celularPostError">
             <div>{{ celularPostError }}</div>
@@ -92,7 +94,7 @@
           </ion-text>
         <ion-row>
           <ion-col>
-            <ion-button type="submit" [disabled]="registerForm.invalid || rutPostError || nombrePostError || apellidoPostError || emailPostError || celularPostError || contrasenaPostError">Enviar</ion-button>
+            <ion-button class="transparent-button" style="padding-top: 4%; padding-bottom: -40px" type="submit" [disabled]="registerForm.invalid || rutPostError || nombrePostError || apellidoPostError || emailPostError || celularPostError || contrasenaPostError">Enviar</ion-button>
           </ion-col>
         </ion-row>
       </form>

@@ -25,6 +25,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
+  showStreetNames: boolean = true;
+  showTraffic: boolean = false;
   markerId!: string;
   hasMarker: boolean = false;
   position = {
@@ -50,7 +52,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       "elementType": "labels",
       "stylers": [
         {
-          "visibility": "off"
+          "visibility": "on" //ESTO CAMBIE PARA QUE SEA VEAN LOS NOMBRES DE LAS CALLES Y otras weas
         }
       ]
     },
@@ -67,6 +69,82 @@ export class HomePage implements AfterViewInit, OnDestroy {
       "stylers": [
         {
           "visibility": "off"
+        }
+      ]
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#73C8FA'
+        }
+      ]
+    },
+    {
+      featureType: 'landscape',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2'
+        }
+      ]
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#85A2BF'
+        },
+        {
+          weight: 1.5
+        }
+      ]
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#D8E6F3'
+        }
+      ]
+    },
+    {
+      featureType: 'road.local',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#9EB6C8'
+        }
+      ]
+    },
+    {
+      featureType: 'poi',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2',
+          visibility: "off"
+        }
+      ]
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#D9D9D9'
+        }
+      ]
+    },
+    {
+      featureType: 'transit',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2'
         }
       ]
     }
@@ -252,7 +330,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       forceCreate: true
     });
     this.addListeners();
-    await this.newMap.enableTrafficLayer(true);
+    await this.newMap.enableTrafficLayer(false);
     await this.newMap.enableCurrentLocation(true);
     await this.insertMarkersFromAPI(); // Insertar marcadores desde la API
   }
