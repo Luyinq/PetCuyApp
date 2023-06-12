@@ -16,6 +16,7 @@ import {
 
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -34,6 +35,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   private routerSubscription: any;
   isHomePage: boolean = false;
   markerPopup: any;
+  sortedMarkers: any[] = []
   allmarkersInfo: {
     id: number;
     nombre: string;
@@ -42,6 +44,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     foto: string;
   }[] = [];
   circles: any[] = [];
+  currentCity: string = '';
   currentPositionSubscription: any;
   gotoAnuncioButton: boolean = false;
   selectedAnnouncementId: number | null = null;
@@ -94,7 +97,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   subscribeToRouterEvents() {
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe( (event) => {
       if (event instanceof NavigationEnd) {
         this.isHomePage = (event.urlAfterRedirects === '/home');
         if (!this.isHomePage) {
@@ -102,8 +105,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
         } else {
           this.createMap(); // Recreate the map when navigating back to the page
           this.startTrackingPosition();
-          console.log('Initializing HomePage');
-
           // Request permission to use push notifications
           // iOS will prompt user and return if they granted permission or not
           // Android will just grant without prompting
@@ -170,6 +171,11 @@ export class HomePage implements AfterViewInit, OnDestroy {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
+
+          const city = await this.getCityFromCoordinates(currentPosition);
+          this.currentCity = city;
+          console.log("====================CIUDAD=================")
+          console.log(this.currentCity)
   
           const insideCircles = this.checkPositionInsideCircles(currentPosition);
   
@@ -238,6 +244,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   async createMap() {
+    this.api.showLoading();
     const center = await this.getCurrentPosition();
     this.newMap = await GoogleMap.create({
       id: 'home-google-map',
@@ -255,6 +262,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     await this.newMap.enableTrafficLayer(true);
     await this.newMap.enableCurrentLocation(true);
     await this.insertMarkersFromAPI(); // Insertar marcadores desde la API
+    this.api.dismissLoading();
   }
 
   async addMarker(lat: number, lng: number) {
@@ -333,8 +341,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.circles = [];
     this.allmarkersInfo = [];
   
-    markers.forEach(async (marker) => {
-      if (!marker.isDeleted) { // Verificar si el anuncio no está eliminado
+    const markerPromises = markers.map(async (marker) => {
+      if (!marker.isDeleted) {
         const lat = parseFloat(marker.posicion.latitud);
         const lng = parseFloat(marker.posicion.longitud);
         const tipo = tiposAnuncio.find((tipo) => tipo.id === marker.tipo);
@@ -383,7 +391,39 @@ export class HomePage implements AfterViewInit, OnDestroy {
         await this.newMap.addCircles(circles);
       }
     });
+  
+    await Promise.all(markerPromises);
+  
+    this.sortMarkersByDistance();
+    console.log("===========================MARCADORES=======================")
+    console.log("sorted", this.sortedMarkers)
+    console.log(this.allmarkersInfo)
   }
+  
+  sortMarkersByDistance() {
+    const currentPosition = this.getCurrentPosition();
+    const sortedMarkers = this.allmarkersInfo.slice().sort((a, b) => {
+      const distanceA = this.calculateDistance(
+        { lat: a.lat, lng: a.lng },
+        currentPosition
+      );
+      const distanceB = this.calculateDistance(
+        { lat: b.lat, lng: b.lng },
+        currentPosition
+      );
+      
+      if (distanceA < distanceB) {
+        return -1;
+      } else if (distanceA > distanceB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    this.sortedMarkers = sortedMarkers;
+  }
+  
+  
   
   
   
@@ -460,6 +500,34 @@ export class HomePage implements AfterViewInit, OnDestroy {
     }
   }
 
+  async getCityFromCoordinates(coordinates: { lat: number; lng: number }): Promise<string> {
+    try {
+      const { lat, lng } = coordinates;
+  
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBH7CLio51Cdf9MYSdDPk0NEu2h07ByGHM`
+      );
+  
+      if (response.ok) {
+        const data = await response.json();
+        const results = data.results;
+        if (results && results.length > 0) {
+          const addressComponents = results[0].address_components;
+          const cityComponent = addressComponents.find((component: { types: string | string[]; }) => component.types.includes('locality'));
+          if (cityComponent) {
+            return cityComponent.long_name;
+          }
+        }
+      } else {
+        throw new Error('Geocoding API request failed');
+      }
+    } catch (error) {
+      console.error('Error geocoding coordinates:', error);
+    }
+  
+    return '';
+  }
+  
   gotoAnuncio(anuncioId: number | null) {
     this.router.navigate(['/anuncio'], { queryParams: { id: anuncioId } });
     anuncioId = null;

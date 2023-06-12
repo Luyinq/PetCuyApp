@@ -102,6 +102,7 @@ export class MascotaFormComponent implements OnInit {
           const petIdParam = this.route.snapshot.paramMap.get('petId');
           const response: any = await this.http.put(`https://luyinq.pythonanywhere.com/mascota/${petIdParam}/`, mascota, { headers }).toPromise();
           this.api.presentToast(response.message);
+          this.api.dismissLoading();
           await this.uploadPhotos(Number(petIdParam), mascota);
         } else {
           const response: any = await this.http.post('https://luyinq.pythonanywhere.com/mascota/', mascota, { headers }).toPromise();
