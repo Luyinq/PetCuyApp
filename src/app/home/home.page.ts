@@ -25,6 +25,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
   @ViewChild('map')
   mapRef!: ElementRef<HTMLElement>;
   newMap!: GoogleMap;
+  showStreetNames: boolean = true;
+  showTraffic: boolean = false;
   markerId!: string;
   hasMarker: boolean = false;
   position = {
@@ -45,7 +47,108 @@ export class HomePage implements AfterViewInit, OnDestroy {
   currentPositionSubscription: any;
   gotoAnuncioButton: boolean = false;
   selectedAnnouncementId: number | null = null;
-
+  styles = [
+    {
+      "elementType": "labels",
+      "stylers": [
+        {
+          "visibility": "on" //ESTO CAMBIE PARA QUE SEA VEAN LOS NOMBRES DE LAS CALLES Y otras weas
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.land_parcel",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.neighborhood",
+      "stylers": [
+        {
+          "visibility": "off"
+        }
+      ]
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#73C8FA'
+        }
+      ]
+    },
+    {
+      featureType: 'landscape',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2'
+        }
+      ]
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#85A2BF'
+        },
+        {
+          weight: 1.5
+        }
+      ]
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#D8E6F3'
+        }
+      ]
+    },
+    {
+      featureType: 'road.local',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#9EB6C8'
+        }
+      ]
+    },
+    {
+      featureType: 'poi',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2',
+          visibility: "off"
+        }
+      ]
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#D9D9D9'
+        }
+      ]
+    },
+    {
+      featureType: 'transit',
+      elementType: 'geometry.fill',
+      stylers: [
+        {
+          color: '#F2F2F2'
+        }
+      ]
+    }
+  ]
 
   constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
     const nombre = localStorage.getItem('nombre');
@@ -222,11 +325,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
         center: center,
         zoom: 20,
         disableDefaultUI: true,
+        styles : this.styles
       },
       forceCreate: true
     });
     this.addListeners();
-    await this.newMap.enableTrafficLayer(true);
+    await this.newMap.enableTrafficLayer(false);
     await this.newMap.enableCurrentLocation(true);
     await this.insertMarkersFromAPI(); // Insertar marcadores desde la API
   }
@@ -344,10 +448,10 @@ export class HomePage implements AfterViewInit, OnDestroy {
           {
             center: { lat: lat, lng: lng },
             radius: 100,
-            fillColor: 'blue',
-            fillOpacity: 0.1,
-            strokeColor: 'blue',
-            strokeWeight: 1,
+            fillColor: 'yellow',
+            fillOpacity: 0.2,
+            strokeColor: 'yellow',
+            strokeWeight: 5,
             clickable: false
           }
         ];

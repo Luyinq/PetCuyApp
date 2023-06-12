@@ -411,7 +411,7 @@ export class ApiService {
 
             anuncio.mascota = mascota; // Assign the "mascota" property to the ad and assign the mascot information
             anuncio.tipo = await this.getTipoAnuncio(anuncio.tipo); // Get the string representation of the ad type
-
+            console.log(anuncio)
             if (!anuncio.isDeleted) {
               anuncios.push(anuncio);
             }
@@ -461,12 +461,32 @@ export class ApiService {
       );
     });
   }
+  
+  async deleteContacto(id: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const url = `https://luyinq.pythonanywhere.com/anuncio/${id}/`;
+      const headers = new HttpHeaders({
+        'Authorization': 'Token ' + localStorage.getItem('token')
+      });
+    
+      const body = {
+        contacto: null
+      };
+  
+      this.http.put(url, body, { headers }).subscribe(
+        () => {
+          resolve(); // Resolves the promise if the update is successful
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
 
   getUrlData(getUrl: string): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
     const url = `${baseUrl}/${getUrl}/`;
-
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': 'Token ' + localStorage.getItem('token')
