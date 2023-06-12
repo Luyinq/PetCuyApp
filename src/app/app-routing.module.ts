@@ -12,6 +12,9 @@ import { MascotaFormComponent } from './formularios/mascota-form/mascota-form.co
 import { AnuncioFormComponent } from './formularios/anuncio-form/anuncio-form.component';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+
+import { AdmincrudComponent } from './admincrud/admincrud.component'
+
 import { MisAnunciosComponent } from './menu/mis-anuncios/mis-anuncios.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 
@@ -55,6 +58,11 @@ const routes: Routes = [
   {
     path: 'perfil',
     component: VerPerfilComponent,
+    canActivate: [AuthGuardGuard]
+  },
+  {
+    path: 'admin/:entidad',
+    component: AdmincrudComponent,
     canActivate: [AuthGuardGuard]
   },
   {

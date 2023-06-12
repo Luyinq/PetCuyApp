@@ -12,6 +12,7 @@ import { App } from '@capacitor/app';
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
+  
 })
 export class AppComponent implements OnInit {
   @ViewChild('fileInput') fileInput: any;
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit {
   showAdminOptions: boolean = false;
   nombre: string | undefined;
   profilePic: string = "assets/imagenes/profileNotFound.jpg";
-
+  jsonItems: any[] = [];
 
   constructor(private alert: AlertController, private router: Router, private fb: FormBuilder, private http: HttpClient, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { 
   }
@@ -62,6 +63,10 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.localStorage = window.localStorage;
     this.updateMenuAndProfilePic();
+    this.apiService.getUrlData('').subscribe((response: any) => {
+      this.jsonItems = Object.keys(response).map(key => ({ key, url: response[key] }));
+    });
+
     this.initializeApp();
   }
 
@@ -97,6 +102,13 @@ export class AppComponent implements OnInit {
       console.error('Error al cerrar la aplicación:', error);
     }
   }
+  
+  redirigirEntidad(index: number) {
+    const entidadClickeada = this.jsonItems[index].key;
+    console.log(entidadClickeada);
+    this.router.navigate(['/admin', entidadClickeada]);
+  }
+  
   
   updateMenuAndProfilePic() {
     this.showMenu = !!this.localStorage.getItem('rut');

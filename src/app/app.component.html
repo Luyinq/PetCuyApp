@@ -66,21 +66,9 @@
 </ion-item>
 
 <div *ngIf="showAdminOptions">
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 1</ion-label>
-    </ion-item>
-  </ion-menu-toggle>
-
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 2</ion-label>
-    </ion-item>
-  </ion-menu-toggle>
-
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 3</ion-label>
+  <ion-menu-toggle *ngFor="let item of jsonItems; let i = index">
+    <ion-item (click)="redirigirEntidad(i)">
+      <ion-label>{{ item.key }}</ion-label>
     </ion-item>
   </ion-menu-toggle>
 </div>
