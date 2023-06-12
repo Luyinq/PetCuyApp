@@ -1,12 +1,12 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="ion-toolbar-fondo">
     <div class="logo-container">
       <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
     </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-content">
+<ion-content class="ion-content-fondo">
   <ion-img style="padding-left: 6%;" src="/assets/imagenes/logoweno.png"></ion-img>
   <form (submit)="submitForm()" [formGroup]="forgotForm" class="loginForm">
     <ion-item lines="full" *ngIf="forgotForm">
