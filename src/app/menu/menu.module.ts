@@ -14,11 +14,10 @@ import { DatePipe } from '@angular/common';
 import { MisAnunciosComponent } from './mis-anuncios/mis-anuncios.component';
 import { TutorialComponent } from '../tutorial/tutorial.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { AdoptarComponent } from './adoptar/adoptar.component';
 
 
 @NgModule({
-  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent, MisAnunciosComponent, TutorialComponent, AdoptarComponent],
+  declarations: [CambiarContrasenaComponent, EditarPerfilComponent, VerPerfilComponent, MisMascotasComponent, VerAnuncioComponent, MisAnunciosComponent, TutorialComponent],
   imports: [
     CommonModule,
     IonicModule,

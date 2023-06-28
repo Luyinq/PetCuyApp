@@ -1,19 +1,18 @@
 
 <ion-app>
 <ion-menu *ngIf="showMenu"  contentId="main-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-item>
-        <ion-avatar slot="start" (click)="avatarClicked()">
-          <img alt="Silhouette of a person's head" src={{profilePic}} />
-        </ion-avatar>
-        <input type="file" style="display: none" #fileInput (change)="uploadImage($event)">
-        <ion-label>
-          Bienvenido, {{nombre}}
-        </ion-label>
-      </ion-item>
+  <ion-header *ngIf="showMenu">
+    <ion-toolbar class="ion-toolbar-fondo">
+      <ion-buttons slot="start">
+        <ion-menu-button class="custom-menu-button" style="color: #1a4c75; background: #5ab1d9;"></ion-menu-button>
+      </ion-buttons>
+      <div class="logo-container">
+        <img style="margin-left: -10%" class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+      </div>
+      
     </ion-toolbar>
   </ion-header>
+    
 
 
   <ion-content>
@@ -98,6 +97,11 @@
       <div class="logo-container">
         <img  style="margin-left: -10%" class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
       </div>
+      <ion-buttons slot="end" *ngIf="isHomePage()">
+        <ion-button style="color: #1a4c75; background: #5ab1d9;" (click)="reloadPage()">
+          <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">

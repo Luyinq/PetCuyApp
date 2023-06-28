@@ -15,6 +15,12 @@ export const environment = {
   },
   CloudMessage: {
     serverKey: 'AAAAtsGETSw:APA91bHALEv82wwVMsHauXDKr7p7DwSS5RsBM18M2Tzh_uXPrEmAvT02vAWBpo2gf3sz1PNCjoKt7As48mue6Pa7r4wUvtPOr9kGFh5hz5N8Q4hF8r3VSIWIZFT-zLOG6ae_UIDVhwLk'
+  },
+  pubNub : {
+    publishKey: 'pub-c-00c55cfd-d4bd-403c-ac52-0e74975fc796',
+    subscribeKey: 'sub-c-dbd75f4a-2df6-4e9a-b541-bc56231d1547',
+    secretKey: 'sec-c-NjI5NTk5ZmItNmZmOS00YWY1LThhNDAtYzQyMzYwMDJmMTgx',
+    channel: {}
   }
 };
 
