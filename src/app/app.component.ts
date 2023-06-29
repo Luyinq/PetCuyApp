@@ -8,6 +8,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { AlertController } from '@ionic/angular';
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -139,6 +140,14 @@ export class AppComponent implements OnInit {
   gotoMyProfile() {
     this.apiService.rut = this.localStorage?.getItem('rut') || '';
     this.router.navigate(['/perfil']);
+  }
+  
+  isHomePage(): boolean {
+    return this.router.url === '/home';
+  }
+
+  reloadPage() {
+    window.location.reload();
   }
   
 

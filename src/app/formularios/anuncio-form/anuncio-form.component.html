@@ -36,12 +36,11 @@
     <ion-text color="danger" *ngIf="anuncioForm.get('mascota')?.invalid && anuncioForm.get('mascota')?.touched">
       <div>{{ getErrorMessage('mascota') }}</div>
     </ion-text>
-    
-    <ion-button id="guardar-button" expand="full" type="submit" [disabled]="botonDeshabilitado || !anuncioForm.valid">
+    <ion-text color="danger" *ngIf="errorMessage">
+      <div>{{ errorMessage }}</div>
+    </ion-text>
+    <ion-button class="sticky-button" id="guardar-button" expand="full" type="submit" [disabled]="botonDeshabilitado || !anuncioForm.valid">
       {{ isEdit ? 'Guardar cambios' : 'Crear anuncio' }}
     </ion-button>
   </form>
-  <ion-text color="danger" *ngIf="errorMessage">
-    <div>{{ errorMessage }}</div>
-  </ion-text>
 </ion-content>

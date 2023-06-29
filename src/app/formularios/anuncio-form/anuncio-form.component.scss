@@ -5,3 +5,16 @@
     display: block;
     margin: 0 auto;
   }
+
+
+  .sticky-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--ion-color-primary);
+    color: white;
+    z-index: 999; /* Asegura que el botón esté en la parte superior */
+  }
+  
+  

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from 'src/app/shared/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import { PubnubService } from 'src/app/shared/pubnub.service';
 
 @Component({
   selector: 'app-anuncio-form',
@@ -39,7 +40,7 @@ export class AnuncioFormComponent implements OnInit {
     return '';
   }
 
-  constructor(private api: ApiService, private route: ActivatedRoute, private router : Router, private cdr: ChangeDetectorRef) {
+  constructor(private pub: PubnubService, private api: ApiService, private route: ActivatedRoute, private router : Router, private cdr: ChangeDetectorRef) {
     this.isEdit = false;
   }
 
@@ -101,33 +102,58 @@ export class AnuncioFormComponent implements OnInit {
   
     this.api.createAnuncio(descripcion, categoria, mascota).subscribe(
       (response: any) => {
-        // La solicitud de creación de anuncio se completó correctamente
         console.log('Anuncio creado:', response);
-        console.log(this.position);
+        const categoriaSeleccionada = this.obtenerCategoriaSeleccionada(categoria);
+        const nombreMascota = this.obtenerNombreMascotaSeleccionada();
+        const anuncio = this.crearDatosAnuncio(response, categoriaSeleccionada, nombreMascota);
+        const mensajeJSON = JSON.stringify(anuncio);
+        console.log(anuncio)
   
-        // Llamar a la función createPosicion para enviar la posición
         this.api.createPosicion(this.position.latitude, this.position.longitude, response.data.id).subscribe(
           (posicionResponse: any) => {
-            this.api.presentToast("Anuncio creado exitosamente")
+            this.api.presentToast("Anuncio creado exitosamente");
             console.log('Posición creada:', posicionResponse);
+            this.pub.sendMessage("Agregar", mensajeJSON);
             this.resetForm();
-            this.router.navigate(["/home"])
+            this.router.navigate(["/home"]);
           },
           (posicionError: any) => {
-            this.errorMessage = posicionError.message;
-            this.cdr.detectChanges(); // Manually trigger change detection
-            this.botonDeshabilitado = false;
-            console.error('Error al crear la posición:', posicionError);            
+            this.handleError(posicionError);
           }
         );
       },
       (error: any) => {
-        this.errorMessage = error.error.message;
-        this.botonDeshabilitado = false;
-        this.cdr.detectChanges()
-        console.error('Error al crear el anuncio:', error);        
+        this.handleError(error);
       }
     );
+  }
+  
+  obtenerCategoriaSeleccionada(categoriaId: number) {
+    const categoria = this.categoriaOptions.find(option => option.id === categoriaId);
+    return categoria ? categoria.nombre : '';
+  }
+
+  obtenerNombreMascotaSeleccionada() {
+    const mascota = this.mascotaOptions.find(option => option.id === this.mascotaSeleccionada);
+    return mascota ? mascota.nombre : '';
+  }
+  
+  crearDatosAnuncio(response: any, categoriaNombre: string, nombreMascota: string) {
+    return {
+      id: response.data.id,
+      categoria: categoriaNombre,
+      descripcion: response.data.descripcion,
+      mascota: nombreMascota,
+      lat: this.position.latitude,
+      lng: this.position.longitude
+    };
+  }
+  
+  handleError(error: any) {
+    this.errorMessage = error.error.message;
+    this.botonDeshabilitado = false;
+    this.cdr.detectChanges();
+    console.error('Error:', error);
   }
   
   resetForm() {

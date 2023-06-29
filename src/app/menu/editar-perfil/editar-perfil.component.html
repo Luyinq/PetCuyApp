@@ -56,11 +56,7 @@
     <ion-text color="danger" *ngIf="celularPutError">
       <div>{{ celularPutError }}</div>
     </ion-text>
-
-    <br>
-    <br>
-    
-    <ion-button class="transparent-button" style="padding-left: 90px" type="submit" [disabled]="updateForm.invalid">
+    <ion-button class="sticky-button" type="submit" expand="block" [disabled]="updateForm.invalid">
       Guardar cambios
     </ion-button>
   </form>

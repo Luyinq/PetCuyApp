@@ -26,10 +26,10 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 
-.ion-content-fondo {
+/*.ion-content-fondo {
   --background: transparent url('.../../assets/imagenes/fondowenodos.jpg') no-repeat center center / cover;
   --ion-background-color: transparent;
-}
+}*/
 
 #passwordEye {
     position: absolute; 
@@ -142,7 +142,7 @@
   }
 }
 
-ion-footer {
+.ion-footer-button {
   position: absolute;
   bottom: 0;
   width: 100%;
