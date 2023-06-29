@@ -1,11 +1,12 @@
-<ion-header>
-  <ion-toolbar>
+<!-- <ion-header>
+  <ion-toolbar class="transparent-background">
     <ion-title class="ion-text-center">Perfil del usuario</ion-title>
   </ion-toolbar>
 </ion-header>
+ -->
 
-<ion-content>
-  <ion-card *ngIf="usuario" class="user-profile-card">
+<ion-content class="ion-content-profile">
+  <ion-card *ngIf="usuario" class="user-profile-card" style="background-color: transparent; padding-right: 20px; padding-top: 10px">
     <ion-card-header>
     </ion-card-header>
     <ion-card-content>
@@ -16,32 +17,32 @@
       </div>
       <ng-template #defaultProfile>
         <ion-avatar class="avatar-circle">
-          <ion-img src="assets/imagenes/profileNotFound.jpg" alt="Foto de perfil por defecto"></ion-img>
+          <ion-img src="assets/imagenes/perroperfil.png" alt="Foto de perfil por defecto"></ion-img>
         </ion-avatar>
       </ng-template>
     </ion-card-content>
   </ion-card>
-
-  <ion-card *ngIf="usuario" class="user-info-card">
+  <br>
+  <ion-card *ngIf="usuario" class="user-info-card" style="background-color: #08d6ff2e;">
     <ion-card-header class="ion-text-center">
-      <ion-card-title>Información del usuario</ion-card-title>
+      <ion-card-title style="font-style: bold; color: #217E94;">Información del usuario</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
         <ion-label>Nombre:</ion-label>
-        <ion-note slot="end">{{ usuario.nombre }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.nombre }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Apellido:</ion-label>
-        <ion-note slot="end">{{ usuario.apellido }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.apellido }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Celular:</ion-label>
-        <ion-note slot="end">+56{{ usuario.celular }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">+56{{ usuario.celular }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Correo:</ion-label>
-        <ion-note slot="end">{{ usuario.correo }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.correo }}</ion-note>
       </ion-item>
     </ion-card-content>
   </ion-card>

@@ -165,3 +165,50 @@ ion-footer {
 
   
 }
+
+.ion-content-profile {
+  --background: #dbf7fa; //COLOR DE FONDO DE PAGES
+}
+
+.user-info-card{
+  ion-item{
+    color: #217E94;
+    margin-top: 15px;
+  }
+}
+
+.user-profile-card {
+  border: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-style: none !important;
+}
+
+.user-info-card {
+  ion-item, ion-label {
+    --ion-background-color: transparent;
+  }
+}
+
+.ion-content-resetpass{
+  --background: #dbf7fa;
+    ion-item, ion-label {
+    --ion-background-color: transparent;
+    }
+}
+
+.resetpass-button {
+
+  --background: rgba(70, 193, 202, 0.445);
+  --color: #002d4b;
+  --border-color: rgb(23, 102, 155);
+  font-weight: bold;
+
+}
+
+.ion-content-edit{
+  --background: #dbf7fa;
+    ion-item, ion-label {
+    --ion-background-color: transparent;
+    }
+}

@@ -4,10 +4,13 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-content-resetpass">
   <form [formGroup]="updatePassForm" (ngSubmit)="submitForm(updatePassForm)">
+    <br>
+    <br>
     <ion-item *ngIf="updatePassForm">
-      <ion-label position="floating">Contraseña actual</ion-label>
+      <ion-label position="floating" style="color: #217E94;">Contraseña actual</ion-label>
+      <br>
       <ion-input  tabindex="-1" type="{{ showPassword1 ? 'text' : 'password' }}" formControlName="vieja_contrasena" required></ion-input>
       <ion-icon id="passwordEye" name="{{ showPassword1 ? 'eye-off' : 'eye' }}" slot="end" (click)="togglePasswordVisibility1()"></ion-icon>
     </ion-item>
@@ -17,9 +20,11 @@
     <ion-text color="danger" *ngIf="vieja_contrasenaPutError">
       <div>{{ vieja_contrasenaPutError }}</div>
     </ion-text>
-
+    <br>
+    <br>
     <ion-item lines="full" *ngIf="updatePassForm">
-      <ion-label position="floating">Nueva Contraseña</ion-label>
+      <ion-label position="floating" style="color: #217E94;">Nueva Contraseña</ion-label>
+      <br>
       <ion-input type="{{ showPassword2 ? 'text' : 'password' }}" name="password" placeholder="Ingrese su contraseña" maxlength="20" formControlName="password" ></ion-input>
       <ion-icon id="passwordEye" name="{{ showPassword2 ? 'eye-off' : 'eye' }}" slot="end" (click)="togglePasswordVisibility2()"></ion-icon>
     </ion-item>
@@ -29,18 +34,23 @@
     <ion-text color="danger" *ngIf="passwordPutError">
       <div>{{ passwordPutError }}</div>
     </ion-text>
-    
+    <br>
+    <br>
     <ion-item lines="full" *ngIf="updatePassForm">
-      <ion-label position="floating">Confirma la nueva contraseña</ion-label>
+      <ion-label position="floating" style="color: #217E94;">Confirma la nueva contraseña</ion-label>
+      <br>
       <ion-input type="{{ showPassword3 ? 'text' : 'password' }}" name="confirmPassword" placeholder="Confirme su contraseña" formControlName="confirmPassword"></ion-input>
       <ion-icon id="passwordEye" name="{{ showPassword3 ? 'eye-off' : 'eye' }}" slot="end" (click)="togglePasswordVisibility3()"></ion-icon>
     </ion-item>
     <ion-text color="danger" *ngIf="updatePassForm.get('confirmPassword')?.invalid && updatePassForm.get('confirmPassword')?.touched || updatePassForm.get('confirmPassword')?.hasError('not_matching')">
       <div>{{ getErrorMessage('confirmPassword') }}</div>
     </ion-text>
+    <br>
+    <br>
 
 
-    <ion-button type="submit" expand="block" [disabled]="updatePassForm.invalid">
+
+    <ion-button type="submit" style="padding-left: 90px;" [disabled]="updatePassForm.invalid" class="resetpass-button">
       Guardar cambios
     </ion-button>
   </form>
