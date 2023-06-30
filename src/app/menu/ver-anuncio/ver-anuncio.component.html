@@ -12,20 +12,20 @@
         <img src="{{ anuncioData.mascota.foto_1 }}" class="anuncio-image">
       </ion-item>
       <div class="description-container">
-        <ion-text class="description-text" style="color:black;">Descripción:</ion-text>
-        <ion-text class="description-text">{{ anuncioData.descripcion }}</ion-text>
+        <ion-text class="description-text" style="color: #217E94;">Descripción:</ion-text>
+        <ion-text class="description-text" style="color: #217E94;">{{ anuncioData.descripcion }}</ion-text>
       </div>
       <ion-item>
-        <ion-label>Nombre</ion-label>
-        <ion-text>{{ anuncioData?.mascota?.nombre }}</ion-text>
+        <ion-label style="color: #217E94;">Nombre</ion-label>
+        <ion-text style="color: #217E94;">{{ anuncioData?.mascota?.nombre }}</ion-text>
       </ion-item>
       <ion-item>
-        <ion-label>Tipo Mascota</ion-label>
-        <ion-text>{{ anuncioData.mascota.tipo }}</ion-text>
+        <ion-label style="color: #217E94;">Tipo Mascota</ion-label>
+        <ion-text style="color: #217E94;">{{ anuncioData.mascota.tipo }}</ion-text>
       </ion-item>
       <ion-item>
-        <ion-label>Fecha</ion-label>
-        <ion-text>{{ datePipe.transform(anuncioData.fecha, 'dd/MM/yyyy') }}</ion-text>
+        <ion-label style="color: #217E94;">Fecha</ion-label>
+        <ion-text style="color: #217E94;">{{ datePipe.transform(anuncioData.fecha, 'dd/MM/yyyy') }}</ion-text>
       </ion-item>
     </ion-card-content>
   </ion-card>

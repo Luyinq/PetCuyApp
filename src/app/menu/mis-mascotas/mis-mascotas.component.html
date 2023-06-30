@@ -4,12 +4,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-content-mispets">
   <ion-text *ngIf="!pets" class="no-pets-text">
     No tienes mascotas registradas.
   </ion-text>
 
-  <div class="content-container">
+  <ion-item lines="none" class="content-container">
     <ion-list>
       <ion-item style="margin-top: 10px;" *ngFor="let pet of pets" class="custom-item">
         <ion-thumbnail slot="start" class="pet-thumbnail">
@@ -17,12 +17,12 @@
         </ion-thumbnail>
         <ion-label>
           <ion-item>
-            <ion-label class="custom-label">Nombre:</ion-label>
-            <ion-note slot="end">{{ pet.nombre }}</ion-note>
+            <ion-label class="custom-label" style="color: #217E94;">Nombre:</ion-label>
+            <ion-note slot="end" style="color: #217E94;">{{ pet.nombre }}</ion-note>
           </ion-item>
           <ion-item>
-            <ion-label class="custom-label">Tipo:</ion-label>
-            <ion-note slot="end">{{ pet.tipo }}</ion-note>
+            <ion-label class="custom-label" style="color: #217E94;">Tipo:</ion-label>
+            <ion-note slot="end" style="color: #217E94;">{{ pet.tipo }}</ion-note>
           </ion-item>
           <br>
           <ion-buttons class="ion-buttons-centered">
@@ -36,7 +36,7 @@
         </ion-label>
       </ion-item>
     </ion-list>
-  </div>
+  </ion-item>
   
   <ion-button class="sticky-button" expand="full" (click)="mascotaForm('Crear')">Crear Mascota</ion-button>
 </ion-content>
