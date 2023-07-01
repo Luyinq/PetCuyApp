@@ -5,3 +5,34 @@ ion-content {
 body {
     background: transparent;
 }
+
+.avatar-container {
+    position: relative;
+  }
+  
+  .avatar-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .avatar-container:hover .avatar-overlay {
+    opacity: 1;
+  }
+  
+  .edit-icon {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  

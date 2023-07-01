@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
     const publicId = this.localStorage?.getItem('rut') || '';
     const file = event.target.files[0];
 
+    this.apiService.presentToast("Subiendo imagen...")
     this.apiService.uploadImage(file, publicId, environment.cloudify.presetProfilePic)
       .then((imageUrl: string) => {
         console.log(imageUrl);

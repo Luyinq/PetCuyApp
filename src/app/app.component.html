@@ -1,15 +1,20 @@
 
 <ion-app>
 <ion-menu *ngIf="showMenu"  contentId="main-content">
-  <ion-header *ngIf="showMenu">
-    <ion-toolbar class="ion-toolbar-fondo">
-      <ion-buttons slot="start">
-        <ion-menu-button class="custom-menu-button" style="color: #1a4c75; background: #5ab1d9;"></ion-menu-button>
-      </ion-buttons>
-      <div class="logo-container">
-        <img style="margin-left: -10%" class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
-      </div>
-      
+  <ion-header>
+    <ion-toolbar>
+      <ion-item>
+        <ion-avatar slot="start" (click)="avatarClicked()" class="avatar-container">
+          <img alt="Silhouette of a person's head" src="{{ profilePic }}" />
+          <div class="avatar-overlay">
+            <ion-icon name="pencil" class="edit-icon"></ion-icon>
+          </div>
+        </ion-avatar>
+        <input type="file" #fileInput style="display: none" (change)="uploadImage($event)" />
+        <ion-label>
+          Bienvenido, {{ nombre }}
+        </ion-label>
+      </ion-item>
     </ion-toolbar>
   </ion-header>
     
