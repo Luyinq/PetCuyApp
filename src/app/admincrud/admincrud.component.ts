@@ -24,6 +24,7 @@ export class AdmincrudComponent  implements OnInit {
   valorOriginal: string = '';
   cambiosRealizados: { campo: string, valorOriginal: string, valorNuevo: string }[] = [];
 
+  nuevoTipoMascota: string = '';
 
 
   updateForm = new FormGroup({
@@ -281,10 +282,6 @@ cambiarAdminUsuario(entidad:any) {
 }
 
 
-
-
-
-
 async eliminarTipoMascota(entidad: any) {
   const mascota = entidad.id; // Obtén el rut del objeto 'entidad'
   
@@ -357,6 +354,73 @@ async editarTipoMascota(entidad: any) {
   await alert.present();
 
 }
+async confirmarCreacionTipoMascota() {
+  const alert = await this.alertController.create({
+    header: 'Confirmar creación',
+    message: '¿Estás seguro de crear este tipo de mascota: "' + this.nuevoTipoMascota + '"?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Creación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.agregarTipoMascota();
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+
+async agregarTipoMascota() {
+  const alert = await this.alertController.create({
+    header: 'Confirmar creación',
+    message: '¿Estás seguro de crear este tipo de mascota: "' + this.nuevoTipoMascota + '"?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Creación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          const tipoMascota = {
+            nombre: this.nuevoTipoMascota
+          };
+
+          this.apiService.agregarTipoMascota(tipoMascota).subscribe(
+            () => {
+              // Creación exitosa
+              console.log('Tipo de mascota creado');
+              this.obtenerDatosEntidad('tipo_mascota');
+            },
+            (error) => {
+              // Error al crear el tipo de mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+
+
+
+
+
+
 
 
 
@@ -390,6 +454,7 @@ async presentAlert(title: string, message: string) {
         text: 'OK',
         handler: () => {
            // Recargar la página
+           
         }
       }
     ]

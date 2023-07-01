@@ -32,10 +32,27 @@ ion-toggle.toggle-checked::part(handle) {
 }
 
 .users-info-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #fff;
   box-shadow: 2px 2px 6px 6px rgba(0, 0, 0, 0.2);
   
 }
+.user-profile-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0);
+}
+.avatar-circle {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 
 .titulo {
   text-align: center;

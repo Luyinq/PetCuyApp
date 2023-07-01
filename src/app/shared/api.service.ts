@@ -25,6 +25,7 @@ import { LoadingController } from '@ionic/angular';
 export class ApiService {
 
   rut: string = '';
+  nuevoTipoMascota: string = '';
 
   constructor(private loadingController: LoadingController, private http: HttpClient, private router: Router, private toastController: ToastController) { }
 
@@ -546,6 +547,19 @@ export class ApiService {
     });
     return this.http.delete(url, { headers });
   }
+
+  agregarTipoMascota(tipoMascota: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_mascota/`; // Reemplaza la URL con la ruta correspondiente para crear un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.post(url, tipoMascota, { headers });
+  }
+  
+  
+  
 
   editarTipoAnuncio(tipoAnuncio: any): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
