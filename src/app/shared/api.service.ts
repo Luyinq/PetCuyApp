@@ -216,8 +216,6 @@ export class ApiService {
     });
   }
 
-
-
   listTipoAnuncio(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
       const url = `https://luyinq.pythonanywhere.com/tipo_anuncio/`;
@@ -317,9 +315,6 @@ export class ApiService {
       );
     });
   }
-
-
-
 
   createAnuncio(descripcion: string, categoria: number, mascota: number): Observable<any> {
     const token = localStorage.getItem('token');
@@ -558,8 +553,6 @@ export class ApiService {
     return this.http.post(url, tipoMascota, { headers });
   }
   
-  
-  
 
   editarTipoAnuncio(tipoAnuncio: any): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
@@ -578,6 +571,15 @@ export class ApiService {
       'Authorization': 'Token ' + localStorage.getItem('token')
     });
     return this.http.delete(url, { headers });
+  }
+  agregarTipoAnuncio(tipo_anuncio: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/tipo_anuncio/`; // Reemplaza la URL con la ruta correspondiente para crear un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.post(url, tipo_anuncio, { headers });
   }
 
   editarEstado(estado: any): Observable<any> {
@@ -598,6 +600,17 @@ export class ApiService {
     });
     return this.http.delete(url, { headers });
   }
+
+  agregarEstado(estado: any): Observable<any> {
+    const baseUrl = 'https://luyinq.pythonanywhere.com';
+    const url = `${baseUrl}/estado/`; // Reemplaza la URL con la ruta correspondiente para crear un tipo de mascota
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + localStorage.getItem('token')
+    });
+    return this.http.post(url, estado, { headers });
+  }
+
 
   editarMascota(mascota: any): Observable<any> {
     const baseUrl = 'https://luyinq.pythonanywhere.com';
