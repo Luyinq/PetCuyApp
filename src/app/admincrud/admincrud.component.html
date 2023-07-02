@@ -139,7 +139,7 @@
 
 <ion-list *ngIf="esAdminTipo_anuncioURL()">
   <ion-title class="titulo" >Modificar o eliminar tipo de anuncio</ion-title>
-  <form *ngFor="let entidad of datos" (submit)="editarTipoMascota(entidad)" class="data-form-tipo">
+  <form *ngFor="let entidad of datos" (submit)="editarTipoAnuncio(entidad)" class="data-form-tipo">
     <ion-card class="users-info-card ion-no-padding">
     <div class="data-container">
       
@@ -150,10 +150,28 @@
       <ion-button type="submit" shape="round" color="primary"><ion-icon slot="icon-only" name="save-outline" class="icono"></ion-icon></ion-button>
     </div>
     <div class="center-icons">
-      <ion-button shape="round" color="danger" (click)="eliminarTipoMascota(entidad)">
+      <ion-button shape="round" color="danger" (click)="eliminarTipoAnuncio(entidad)">
         <ion-icon slot="icon-only" name="close-circle-outline" class="icono"></ion-icon>
       </ion-button>
     </div>
+  </div>
+  </ion-card>
+  </form>
+  <form (ngSubmit)="agregarTipoAnuncio()" class="data-form-tipo">
+    <ion-card class="users-info-card ion-no-padding" >
+  
+      <div class="data-container">
+        <ion-input [(ngModel)]="nuevoTipoAnuncio" name="nombre" style="text-align: center; font-weight: bolder;" placeholder="Tipo Anuncio"></ion-input>
+      </div>
+  
+      <div class="button-container">
+        <div class="button-row">
+            <ion-button type="submit" shape="round" color="success">
+              <ion-icon slot="icon-only" name="add-circle-outline" class="icono"></ion-icon>
+            </ion-button>
+         
+          </div>
+    
   </div>
   </ion-card>
   </form>
@@ -161,7 +179,7 @@
 
 <ion-list *ngIf="esAdminEstadoURL()">
   <ion-title class="titulo" >Modificar o eliminar estado</ion-title>
-  <form *ngFor="let entidad of datos" (submit)="editarTipoMascota(entidad)" class="data-form-tipo">
+  <form *ngFor="let entidad of datos" (submit)="editarEstado(entidad)" class="data-form-tipo">
     <ion-card class="users-info-card ion-no-padding">
     <div class="data-container">
       
@@ -172,10 +190,28 @@
       <ion-button type="submit" shape="round" color="primary"><ion-icon slot="icon-only" name="save-outline" class="icono"></ion-icon></ion-button>
     </div>
     <div class="center-icons">
-      <ion-button shape="round" color="danger" (click)="eliminarTipoMascota(entidad)">
+      <ion-button shape="round" color="danger" (click)="eliminarEstado(entidad)">
         <ion-icon slot="icon-only" name="close-circle-outline" class="icono"></ion-icon>
       </ion-button>
     </div>
+  </div>
+  </ion-card>
+  </form>
+  <form (ngSubmit)="agregarEstado()" class="data-form-tipo">
+    <ion-card class="users-info-card ion-no-padding" >
+  
+      <div class="data-container">
+        <ion-input [(ngModel)]="nuevoEstado" name="nombre" style="text-align: center; font-weight: bolder;" placeholder="Estado"></ion-input>
+      </div>
+  
+      <div class="button-container">
+        <div class="button-row">
+            <ion-button type="submit" shape="round" color="success">
+              <ion-icon slot="icon-only" name="add-circle-outline" class="icono"></ion-icon>
+            </ion-button>
+         
+          </div>
+    
   </div>
   </ion-card>
   </form>
@@ -188,7 +224,7 @@
 
     <ion-card class="users-info-card ion-no-padding">
       <ion-card-content>
-        <form (submit)="editarTipoMascota(entidad)" class="data-form">
+        <form (submit)="editarMascota(entidad)" class="data-form">
       <div class="data-container">
         <div class="label-column">
           <ion-label style="padding-left: 10%; font-weight: bolder; width: 200%;">RUT del dueño:</ion-label>
@@ -212,7 +248,7 @@
       <ion-button type="submit" shape="round" color="primary"><ion-icon slot="icon-only" name="save-outline" class="icono"></ion-icon></ion-button>
     </div>
     <div class="center-icons">
-      <ion-button shape="round" color="danger" (click)="eliminarTipoMascota(entidad)">
+      <ion-button shape="round" color="danger" (click)="eliminarMascota(entidad)">
         <ion-icon slot="icon-only" name="close-circle-outline" class="icono"></ion-icon>
       </ion-button>
     </div>
@@ -226,19 +262,44 @@
 
 <ion-list *ngIf="esAdminAnuncioURL()">
   <ion-title class="titulo">Información de anuncios</ion-title>
-  <ion-searchbar placeholder="Filtrar Rut Dueño" [(ngModel)]="filtroRut" (ionChange)="filtrarDatos()" (input)="filtrarInput($event)" class="sticky-search"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar Rut Dueño" [(ngModel)]="filtroRut" (ionChange)="filtrarDatosAnuncio()" (input)="filtrarInput($event)" class="sticky-search"></ion-searchbar>
 
   <ion-item class="ion-justify-content-between" *ngFor="let entidad of datos">
     <ion-card class="users-info-card ion-no-padding">
       <ion-card-content>
+        <ion-card *ngIf="entidad" class="user-profile-card">
+          <ion-card-content>
+            <div class="image-column" style="display: flex; justify-content: center; align-items: center;">
+              <img [src]="entidad.mascota.foto_1" alt="Imagen de mascota" style="width: 50%;">
+            </div>
+          </ion-card-content>
+          
+          </ion-card>
         <form (submit)="editarUsuario(entidad)" class="data-form">
+          <div class="data-container">
+            <div class="label-column">
+              <ion-label>Autor:</ion-label>
+            </div>
+            <div class="input-column">
+              <ion-input [(ngModel)]="entidad.autor" name="autor" required [readonly]="true"></ion-input>
+            </div>
+          </div>
+          <div class="data-container">
+            <div class="label-column">
+              <ion-label>Contacto:</ion-label>
+            </div>
+            <div class="input-column">
+              <ion-input [(ngModel)]="entidad.contacto" name="contacto" required [readonly]="true"></ion-input>
+            </div>
+          </div>
           <div class="data-container">
             <div class="label-column">
               <ion-label>Mascota:</ion-label>
             </div>
             <div class="input-column">
-              <ion-input [(ngModel)]="entidad.mascota" name="mascota" required [readonly]="true"></ion-input>
+              <ion-input [(ngModel)]="entidad.mascota.nombre" name="mascota" required [readonly]="true"></ion-input>
             </div>
+
           </div>
           <div class="data-container">
             <div class="label-column">
@@ -263,7 +324,7 @@
         </form>
         <div class="button-container">
           <ion-button shape="round" color="danger" (click)="eliminarUsuario(entidad)">
-            Eliminar usuario
+            Eliminar anuncio
           </ion-button>
         </div>
       </ion-card-content>

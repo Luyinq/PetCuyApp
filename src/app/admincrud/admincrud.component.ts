@@ -25,7 +25,8 @@ export class AdmincrudComponent  implements OnInit {
   cambiosRealizados: { campo: string, valorOriginal: string, valorNuevo: string }[] = [];
 
   nuevoTipoMascota: string = '';
-
+  nuevoTipoAnuncio: string = '';
+  nuevoEstado: string = '';
 
   updateForm = new FormGroup({
     nombre: new FormControl('',[Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
@@ -82,7 +83,38 @@ export class AdmincrudComponent  implements OnInit {
         this.actualizarEstadoToggle();
         console.log(this.datos);
       });
-    } else {
+    } else if (entidad === 'anuncio') {
+      this.apiService.getUrlData('anuncio').subscribe((response: any) => {
+        this.datosOriginales = Object.entries(response).map(([key, value]) => value);
+        this.datos = this.datosOriginales;
+        this.actualizarEstadoToggle();
+        console.log(this.datos);
+      });
+  
+      this.apiService.getUrlData('mascota').subscribe((response: any) => {
+        const datosMascota = Object.entries(response).map(([key, value]) => value);
+        // Aquí puedes combinar los datos de anuncio y mascota como desees.
+        // Por ejemplo, puedes asignar los datos de mascota a la propiedad correspondiente en los datos de anuncio.
+        this.datos.forEach((anuncio: any) => {
+          const fechaISO = anuncio.fecha;
+          const fecha = new Date(fechaISO);
+          const dia = fecha.getDate().toString().padStart(2, '0');
+          const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+          const anio = fecha.getFullYear().toString();
+          const hora = fecha.getHours().toString().padStart(2, '0');
+          const minutos = fecha.getMinutes().toString().padStart(2, '0');
+          const segundos = fecha.getSeconds().toString().padStart(2, '0');
+          anuncio.fecha = `${dia}/${mes}/${anio} ${hora}:${minutos}:${segundos}`;
+
+          const mascota = datosMascota.find((m: any) => m.id === anuncio.mascota);
+          if (mascota) {
+            anuncio.mascota = mascota;
+          }
+        });
+  
+        this.actualizarEstadoToggle();
+      });
+    }else {
       this.apiService.getUrlData(entidad).subscribe((response: any) => {
         this.datosOriginales = Object.entries(response).map(([key, value]) => value);
         this.datos = this.datosOriginales;
@@ -91,6 +123,7 @@ export class AdmincrudComponent  implements OnInit {
       });
     }
   }
+  
   actualizarEstadoToggle() {
     for (const entidad of this.datos) {
       entidad.isAdminToggle = entidad.isAdmin;
@@ -319,27 +352,27 @@ async eliminarTipoMascota(entidad: any) {
   
 }
 
-async editarTipoMascota(entidad: any) {
+async editarTipoAnuncio(entidad: any) {
   const alert = await this.alertController.create({
     header: 'Confirmar edición',
-    message: '¿Estás seguro de editar este tipo de mascota: '+'"'+entidad.nombre+'"'+' ?',
+    message: '¿Estás seguro de editar este tipo de anuncio: '+'"'+entidad.nombre+'"'+' ?',
     buttons: [
       {
         text: 'Cancelar',
         role: 'cancel',
         handler: () => {
-          this.obtenerDatosEntidad('tipo_mascota');
+          this.obtenerDatosEntidad('tipo_anuncio');
           console.log('Edición cancelada');
         }
       },
       {
         text: 'Aceptar',
         handler: () => {
-          this.apiService.editarTipoMascota(entidad).subscribe(
+          this.apiService.editarTipoAnuncio(entidad).subscribe(
             () => {
               // Eliminación exitosa
-              console.log('Tipo de mascota editado');
-              this.obtenerDatosEntidad('tipo_mascota');
+              console.log('Tipo de anuncio editado');
+              this.obtenerDatosEntidad('tipo_anuncio');
             },
             (error) => {
               // Error al eliminar el tipo mascota
@@ -353,29 +386,6 @@ async editarTipoMascota(entidad: any) {
 
   await alert.present();
 
-}
-async confirmarCreacionTipoMascota() {
-  const alert = await this.alertController.create({
-    header: 'Confirmar creación',
-    message: '¿Estás seguro de crear este tipo de mascota: "' + this.nuevoTipoMascota + '"?',
-    buttons: [
-      {
-        text: 'Cancelar',
-        role: 'cancel',
-        handler: () => {
-          console.log('Creación cancelada');
-        }
-      },
-      {
-        text: 'Aceptar',
-        handler: () => {
-          this.agregarTipoMascota();
-        }
-      }
-    ]
-  });
-
-  await alert.present();
 }
 
 async agregarTipoMascota() {
@@ -416,16 +426,300 @@ async agregarTipoMascota() {
   await alert.present();
 }
 
+async agregarTipoAnuncio() {
+  const alert = await this.alertController.create({
+    header: 'Confirmar creación',
+    message: '¿Estás seguro de crear este tipo de anuncio: "' + this.nuevoTipoAnuncio + '"?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Creación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          const tipoAnuncio = {
+            nombre: this.nuevoTipoAnuncio
+          };
 
+          this.apiService.agregarTipoAnuncio(tipoAnuncio).subscribe(
+            () => {
+              // Creación exitosa
+              console.log('Tipo de anuncio creado');
+              this.obtenerDatosEntidad('tipo_anuncio');
+            },
+            (error) => {
+              // Error al crear el tipo de mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
 
+  await alert.present();
+}
 
+async eliminarTipoAnuncio(entidad: any) {
+  const mascota = entidad.id; // Obtén el rut del objeto 'entidad'
+  
+  const alert = await this.alertController.create({
+    header: 'Confirmar eliminación',
+    message: '¿Estás seguro de eliminar este tipo de anuncio: '+'"'+entidad.nombre+'"'+' de manera permanente?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Eliminación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.eliminarTipoAnuncio(mascota).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Tipo de anuncio eliminado');
+              this.obtenerDatosEntidad('tipo_anuncio');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
 
+  await alert.present();
+  
+}
 
+async editarTipoMascota(entidad: any) {
+  const alert = await this.alertController.create({
+    header: 'Confirmar edición',
+    message: '¿Estás seguro de editar este tipo de mascota: '+'"'+entidad.nombre+'"'+' ?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          this.obtenerDatosEntidad('tipo_mascota');
+          console.log('Edición cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.editarTipoMascota(entidad).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Tipo de mascota editado');
+              this.obtenerDatosEntidad('tipo_mascota');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
 
+  await alert.present();
 
+}
 
+async eliminarEstado(entidad: any) {
+  const mascota = entidad.id; // Obtén el rut del objeto 'entidad'
+  
+  const alert = await this.alertController.create({
+    header: 'Confirmar eliminación',
+    message: '¿Estás seguro de eliminar este estado: '+'"'+entidad.nombre+'"'+' de manera permanente?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Eliminación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.eliminarEstado(mascota).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Estado eliminado');
+              this.obtenerDatosEntidad('estado');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
 
-// ...
+  await alert.present();
+  
+}
+
+async editarEstado(entidad: any) {
+  const alert = await this.alertController.create({
+    header: 'Confirmar edición',
+    message: '¿Estás seguro de editar el estado: '+'"'+entidad.nombre+'"'+' ?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          this.obtenerDatosEntidad('estado');
+          console.log('Edición cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.editarEstado(entidad).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Estado editado');
+              this.obtenerDatosEntidad('estado');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+
+}
+
+async agregarEstado() {
+  const alert = await this.alertController.create({
+    header: 'Confirmar creación',
+    message: '¿Estás seguro de crear este estado: "' + this.nuevoEstado + '"?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Creación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          const tipoEstado = {
+            nombre: this.nuevoEstado
+          };
+
+          this.apiService.agregarEstado(tipoEstado).subscribe(
+            () => {
+              // Creación exitosa
+              console.log('Tipo de mascota creado');
+              this.obtenerDatosEntidad('estado');
+            },
+            (error) => {
+              // Error al crear el tipo de mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
+
+async editarMascota(entidad: any) {
+  const alert = await this.alertController.create({
+    header: 'Confirmar edición',
+    message: '¿Estás seguro de editar el nombre de la mascota: '+'"'+entidad.nombre+'"'+' ?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          this.obtenerDatosEntidad('mascota');
+          console.log('Edición cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.editarMascota(entidad).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Nombre de mascota editado');
+              this.obtenerDatosEntidad('mascota');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+
+}
+
+async eliminarMascota(entidad: any) {
+  const mascota = entidad.id; // Obtén el rut del objeto 'entidad'
+  
+  const alert = await this.alertController.create({
+    header: 'Confirmar eliminación',
+    message: '¿Estás seguro de eliminar esta mascota: '+'"'+entidad.nombre+'"'+' de manera permanente?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        handler: () => {
+          console.log('Eliminación cancelada');
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: () => {
+          this.apiService.eliminarMascota(mascota).subscribe(
+            () => {
+              // Eliminación exitosa
+              console.log('Mascota eliminada');
+              this.obtenerDatosEntidad('mascota');
+            },
+            (error) => {
+              // Error al eliminar el tipo mascota
+              console.error(error);
+            }
+          );
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+  
+}
 
 
 async mostrarMensajeRutNoEncontrado() {
@@ -493,6 +787,36 @@ filtrarDatos() {
   this.datos = resultados;
 }
 
+filtrarDatosAnuncio() {
+  const filtroActual = this.filtroRut.trim();
+  console.log(filtroActual)
+
+  if (!filtroActual) {
+    this.obtenerDatosEntidad('anuncio');
+    return console.log(filtroActual);
+  }
+
+  const regex = /^[0-9]+$/;
+
+  if (!regex.test(filtroActual)) {
+    this.mostrarMensajeRutNoEncontrado();
+    return console.log(filtroActual);
+  }
+
+  const filtro = filtroActual.toLowerCase();
+  const resultados = this.datosOriginales.filter((anuncio: any) => {
+    const mascota = anuncio.mascota;
+    const mascotaId = mascota ? mascota.id.toString() : '';
+    return mascotaId.toLowerCase().startsWith(filtro);
+  });
+
+  if (resultados.length === 0) {
+    this.mostrarMensajeRutNoEncontrado();
+    return;
+  }
+
+  this.datos = resultados;
+}
 
 filtrarInput(event: any): void {
   const input = event.target.value;
