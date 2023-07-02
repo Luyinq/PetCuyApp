@@ -219,7 +219,7 @@
 
 <ion-list *ngIf="esAdminMascotaURL()">
   <ion-title class="titulo" >Modificar o eliminar mascota</ion-title>
-
+  <ion-searchbar placeholder="Filtrar Rut del Dueño" [(ngModel)]="filtroRut" (ionChange)="filtrarDatosMascota()" (input)="filtrarInput($event)" class="sticky-search"></ion-searchbar>
   <ion-item class="ion-justify-content-between" *ngFor="let entidad of datos">
 
     <ion-card class="users-info-card ion-no-padding">
@@ -262,7 +262,7 @@
 
 <ion-list *ngIf="esAdminAnuncioURL()">
   <ion-title class="titulo">Información de anuncios</ion-title>
-  <ion-searchbar placeholder="Filtrar Rut Dueño" [(ngModel)]="filtroRut" (ionChange)="filtrarDatosAnuncio()" (input)="filtrarInput($event)" class="sticky-search"></ion-searchbar>
+  <ion-searchbar placeholder="Filtrar Rut Autor" [(ngModel)]="filtroRut" (ionChange)="filtrarDatosAnuncio()" (input)="filtrarInput($event)" class="sticky-search"></ion-searchbar>
 
   <ion-item class="ion-justify-content-between" *ngFor="let entidad of datos">
     <ion-card class="users-info-card ion-no-padding">
@@ -275,53 +275,49 @@
           </ion-card-content>
           
           </ion-card>
-        <form (submit)="editarUsuario(entidad)" class="data-form">
-          <div class="data-container">
-            <div class="label-column">
-              <ion-label>Autor:</ion-label>
+          <form (submit)="editarUsuario(entidad)" class="data-form">
+            <div class="data-container" style="padding-bottom: 10px;">
+              <div class="label-column">
+                <ion-label>Autor:</ion-label>
+              </div>
+              <div class="input-column">
+                <ion-label style="font-weight:initial;">{{ entidad.autor }}</ion-label>
+              </div>
             </div>
-            <div class="input-column">
-              <ion-input [(ngModel)]="entidad.autor" name="autor" required [readonly]="true"></ion-input>
+            <div class="data-container" style="padding-bottom: 10px;">
+              <div class="label-column">
+                <ion-label>Contacto:</ion-label>
+              </div>
+              <div class="input-column">
+                <ion-label style="font-weight:initial;">{{ entidad.contacto }}</ion-label>
+              </div>
             </div>
-          </div>
-          <div class="data-container">
-            <div class="label-column">
-              <ion-label>Contacto:</ion-label>
+            <div class="data-container" style="padding-bottom: 10px;">
+              <div class="label-column">
+                <ion-label>Mascota:</ion-label>
+              </div>
+              <div class="input-column">
+                <ion-label style="font-weight:initial;">{{ entidad.mascota.nombre }}</ion-label>
+              </div>
             </div>
-            <div class="input-column">
-              <ion-input [(ngModel)]="entidad.contacto" name="contacto" required [readonly]="true"></ion-input>
+            <div class="data-container" style="padding-bottom: 10px;">
+              <div class="label-column">
+                <ion-label>Descripcion:</ion-label>
+              </div>
+              <div class="input-column">
+                <ion-label style="font-weight:initial;">{{ entidad.descripcion }}</ion-label>
+              </div>
             </div>
-          </div>
-          <div class="data-container">
-            <div class="label-column">
-              <ion-label>Mascota:</ion-label>
+            <div class="data-container" style="padding-bottom: 10px;">
+              <div class="label-column">
+                <ion-label>Fecha:</ion-label>
+              </div>
+              <div class="input-column">
+                <ion-label style="font-weight:initial;">{{ entidad.fecha }}</ion-label>
+              </div>
             </div>
-            <div class="input-column">
-              <ion-input [(ngModel)]="entidad.mascota.nombre" name="mascota" required [readonly]="true"></ion-input>
-            </div>
-
-          </div>
-          <div class="data-container">
-            <div class="label-column">
-              <ion-label>Descripcion:</ion-label>
-            </div>
-            <div class="input-column">
-              <ion-input [(ngModel)]="entidad.descripcion" name="descripcion" required (click)="mostrarCampoEditado('Nombre', entidad.nombre)"></ion-input>
-            </div>
-          </div>
-          <div class="data-container">
-            <div class="label-column">
-              <ion-label>Fecha:</ion-label>
-            </div>
-            <div class="input-column">
-              <ion-input [(ngModel)]="entidad.fecha" name="fecha" required (click)="mostrarCampoEditado('Apellido', entidad.apellido)"></ion-input>
-            </div>
-          </div>
+          </form>
           
-          <div class="button-container">
-            <ion-button type="submit" shape="round" color="success">Guardar cambios</ion-button>
-          </div>
-        </form>
         <div class="button-container">
           <ion-button shape="round" color="danger" (click)="eliminarUsuario(entidad)">
             Eliminar anuncio

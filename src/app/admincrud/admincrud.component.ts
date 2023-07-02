@@ -786,14 +786,13 @@ filtrarDatos() {
 
   this.datos = resultados;
 }
-
-filtrarDatosAnuncio() {
+filtrarDatosMascota() {
   const filtroActual = this.filtroRut.trim();
-  console.log(filtroActual)
+  console.log('primerconsol')
 
   if (!filtroActual) {
-    this.obtenerDatosEntidad('anuncio');
-    return console.log(filtroActual);
+    this.obtenerDatosEntidad('mascota');
+    return console.log('segundoconsol');
   }
 
   const regex = /^[0-9]+$/;
@@ -803,11 +802,38 @@ filtrarDatosAnuncio() {
     return console.log(filtroActual);
   }
 
-  const filtro = filtroActual.toLowerCase();
+  const resultados = this.datosOriginales.filter((mascota: any) => {
+    const autor = mascota.dueno;
+    return autor.toLowerCase().startsWith(filtroActual);
+  });
+
+  if (resultados.length === 0) {
+    this.mostrarMensajeRutNoEncontrado();
+    return;
+  }
+
+  this.datos = resultados;
+}
+
+filtrarDatosAnuncio() {
+  const filtroActual = this.filtroRut.trim();
+  console.log('primerconsol')
+
+  if (!filtroActual) {
+    this.obtenerDatosEntidad('anuncio');
+    return console.log('segundoconsol');
+  }
+
+  const regex = /^[0-9]+$/;
+
+  if (!regex.test(filtroActual)) {
+    this.mostrarMensajeRutNoEncontrado();
+    return console.log(filtroActual);
+  }
+
   const resultados = this.datosOriginales.filter((anuncio: any) => {
-    const mascota = anuncio.mascota;
-    const mascotaId = mascota ? mascota.id.toString() : '';
-    return mascotaId.toLowerCase().startsWith(filtro);
+    const autor = anuncio.autor;
+    return autor.toLowerCase().startsWith(filtroActual);
   });
 
   if (resultados.length === 0) {

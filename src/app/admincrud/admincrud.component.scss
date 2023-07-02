@@ -8,6 +8,9 @@ ion-toggle {
 
   contain: none;
 }
+ion-label{
+  font-weight: bold;
+}
 
 ion-toggle::part(track),
 ion-toggle.toggle-checked::part(track) {
