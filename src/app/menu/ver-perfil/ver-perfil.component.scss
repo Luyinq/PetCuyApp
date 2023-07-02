@@ -46,3 +46,9 @@
   .whatsapp-icon {
     color: #fff;
   }
+
+  ion-toolbar {
+    --background: white; // Cambia este valor al color deseado
+    --background-color: white; // Cambia este valor al color deseado
+    color: auto;
+  }

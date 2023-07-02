@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef  } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef, Renderer2 } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './shared/api.service';
@@ -7,13 +7,15 @@ import { environment } from 'src/environments/environment.prod';
 import { Geolocation } from '@capacitor/geolocation';
 import { AlertController } from '@ionic/angular';
 import { App } from '@capacitor/app';
+import { filter } from 'rxjs/operators';
+
 
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  
+
 })
 export class AppComponent implements OnInit {
   @ViewChild('fileInput') fileInput: any;
@@ -23,12 +25,25 @@ export class AppComponent implements OnInit {
   nombre: string | undefined;
   profilePic: string = "assets/imagenes/profileNotFound.jpg";
   jsonItems: any[] = [];
+  size: string | undefined;
 
-  constructor(private alert: AlertController, private router: Router, private fb: FormBuilder, private http: HttpClient, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) { 
+
+  constructor(private renderer: Renderer2, private elementRef: ElementRef, private alert: AlertController, private router: Router, private fb: FormBuilder, private http: HttpClient, private apiService: ApiService, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   avatarClicked() {
     this.fileInput.nativeElement.click();
+  }
+
+  checkRoutes(): boolean {
+    if (this.router.url === '/login' ||
+        this.router.url === '/home' ||
+        this.router.url === '/registro' ||
+        this.router.url === '/olvide-contrasena'){
+      return true;
+    } else{
+      return false;
+    }
   }
 
 
@@ -44,16 +59,16 @@ export class AppComponent implements OnInit {
         this.localStorage?.setItem('foto', imageUrl);
         this.profilePic = imageUrl;
         this.changeDetectorRef.detectChanges();
-      // Call the updateProfilePic function to update the profile picture
-      this.apiService.updateProfilePic(imageUrl, this.localStorage?.getItem('rut') || '', this.localStorage?.getItem('token') || '')
-      .then((result: any) => {
-        console.log(result)
-        this.apiService.presentToast(result.message);
-      })
-      .catch((error: any) => {
-        console.log(error)
-        this.apiService.presentToast(error.error.message);
-      });
+        // Call the updateProfilePic function to update the profile picture
+        this.apiService.updateProfilePic(imageUrl, this.localStorage?.getItem('rut') || '', this.localStorage?.getItem('token') || '')
+          .then((result: any) => {
+            console.log(result)
+            this.apiService.presentToast(result.message);
+          })
+          .catch((error: any) => {
+            console.log(error)
+            this.apiService.presentToast(error.error.message);
+          });
       })
       .catch((error: any) => {
         console.log(error);
@@ -61,8 +76,18 @@ export class AppComponent implements OnInit {
       });
   }
 
+  updateSize(): void {
+    this.size = this.checkRoutes() ? '0px' : '40px';
+    console.log(this.size)
+  }
+
 
   ngOnInit() {
+    this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe(() => {
+      this.updateSize();
+    });
     this.localStorage = window.localStorage;
     this.updateMenuAndProfilePic();
     this.apiService.getUrlData('').subscribe((response: any) => {
@@ -104,14 +129,14 @@ export class AppComponent implements OnInit {
       console.error('Error al cerrar la aplicación:', error);
     }
   }
-  
+
   redirigirEntidad(index: number) {
     const entidadClickeada = this.jsonItems[index].key;
     console.log(entidadClickeada);
     this.router.navigate(['/admin', entidadClickeada]);
   }
-  
-  
+
+
   updateMenuAndProfilePic() {
     this.showMenu = !!this.localStorage.getItem('rut');
     if (this.localStorage.getItem('foto') !== "null") {
@@ -142,7 +167,7 @@ export class AppComponent implements OnInit {
     this.apiService.rut = this.localStorage?.getItem('rut') || '';
     this.router.navigate(['/perfil']);
   }
-  
+
   isHomePage(): boolean {
     return this.router.url === '/home';
   }
@@ -150,7 +175,7 @@ export class AppComponent implements OnInit {
   reloadPage() {
     window.location.reload();
   }
-  
+
 
 }
 

@@ -4,6 +4,10 @@ import { ApiService } from 'src/app/shared/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { PubnubService } from 'src/app/shared/pubnub.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AlertController } from '@ionic/angular';
+
+
 
 @Component({
   selector: 'app-anuncio-form',
@@ -11,7 +15,7 @@ import { PubnubService } from 'src/app/shared/pubnub.service';
   styleUrls: ['./anuncio-form.component.scss'],
 })
 export class AnuncioFormComponent implements OnInit {
-
+  alertShown = false;
   isEdit: boolean;
   botonDeshabilitado: boolean = false;
   categoriaOptions: any[] = [];
@@ -21,7 +25,7 @@ export class AnuncioFormComponent implements OnInit {
     latitude: 0,
     longitude: 0
   }
-  errorMessage! : string;
+  errorMessage!: string;
 
   anuncioForm = new FormGroup({
     descripcion: new FormControl('', [Validators.required, Validators.minLength(10)]),
@@ -40,7 +44,7 @@ export class AnuncioFormComponent implements OnInit {
     return '';
   }
 
-  constructor(private pub: PubnubService, private api: ApiService, private route: ActivatedRoute, private router : Router, private cdr: ChangeDetectorRef) {
+  constructor(private alertController: AlertController, private http: HttpClient, private pub: PubnubService, private api: ApiService, private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef) {
     this.isEdit = false;
   }
 
@@ -59,17 +63,76 @@ export class AnuncioFormComponent implements OnInit {
     console.log(this.position)
   }
 
-  
-  listMascotaOptions() {
+
+  async listMascotaOptions() {
     this.mascotaOptions = []; // Clear the array before making the API call
-    this.api.listPets()
-      .then((response: any[]) => {
-        this.mascotaOptions = response;
-        console.log(this.mascotaOptions);
-      })
-      .catch((error) => {
-        console.error(error);
+    const rut = localStorage.getItem('rut');
+
+    if (rut) {
+      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=${rut}`;
+
+      // Obtén el token de alguna manera (por ejemplo, también desde el localStorage)
+      const token = localStorage.getItem('token');
+
+      // Configura los encabezados de la solicitud
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`
       });
+
+      // Realiza la solicitud GET
+      this.http.get(url, { headers }).subscribe(
+        async (response: Object) => {
+          const convertedResponse = response as any[]; // Conversión de tipo a any[]
+
+          if (convertedResponse.length === 0 && !this.alertShown) {
+            this.alertShown = true; // Establecer la variable de bandera en true para evitar más alertas
+            // Mostrar una alerta si el resultado filtrado está vacío
+            const alert = await this.alertController.create({
+              header: '¡Hey!',
+              message: 'No posees mascotas registradas.',
+              buttons: [
+                {
+                  text: 'Ir a mis mascotas',
+                  handler: () => {
+                    this.router.navigate(["/mis-mascotas"]);
+                  }
+                }
+              ]
+            });
+            await alert.present();
+          }
+
+          // Filtra los elementos donde haveAnuncio sea false
+          const filteredResponse = convertedResponse.filter((item: any) => !item.haveAnuncio);
+
+          if (filteredResponse.length === 0 && !this.alertShown) {
+            this.alertShown = true; // Establecer la variable de bandera en true para evitar más alertas
+            // Mostrar una alerta si el resultado filtrado está vacío
+            const alert = await this.alertController.create({
+              header: '¡Hey!',
+              message: 'Todas tus mascotas registradas poseen anuncios.',
+              buttons: [
+                {
+                  text: 'Ir a mis anuncios',
+                  handler: () => {
+                    this.router.navigate(["/mis-anuncios"]);
+                  }
+                }
+              ]
+            });
+            await alert.present();
+          }
+          // Asignar la respuesta filtrada a mascotaOptions
+          this.mascotaOptions = filteredResponse;
+        },
+        (error) => {
+          // Manejar cualquier error ocurrido durante la solicitud
+          console.error(error);
+        }
+      );
+      this.alertShown = false; // Establecer la variable de bandera en true para evitar más alertas
+    }
   }
 
   listCategoriaOptions() {
@@ -97,9 +160,9 @@ export class AnuncioFormComponent implements OnInit {
     const descripcion = this.anuncioForm.get('descripcion')?.value!;
     const categoria = parseInt(this.anuncioForm.get('categoria')?.value!);
     const mascota = parseInt(this.anuncioForm.get('mascota')?.value!);
-  
+
     this.botonDeshabilitado = true;
-  
+
     this.api.createAnuncio(descripcion, categoria, mascota).subscribe(
       (response: any) => {
         console.log('Anuncio creado:', response);
@@ -108,7 +171,7 @@ export class AnuncioFormComponent implements OnInit {
         const anuncio = this.crearDatosAnuncio(response, categoriaSeleccionada, nombreMascota);
         const mensajeJSON = JSON.stringify(anuncio);
         console.log(anuncio)
-  
+
         this.api.createPosicion(this.position.latitude, this.position.longitude, response.data.id).subscribe(
           (posicionResponse: any) => {
             this.api.presentToast("Anuncio creado exitosamente");
@@ -127,7 +190,7 @@ export class AnuncioFormComponent implements OnInit {
       }
     );
   }
-  
+
   obtenerCategoriaSeleccionada(categoriaId: number) {
     const categoria = this.categoriaOptions.find(option => option.id === categoriaId);
     return categoria ? categoria.nombre : '';
@@ -137,7 +200,7 @@ export class AnuncioFormComponent implements OnInit {
     const mascota = this.mascotaOptions.find(option => option.id === this.mascotaSeleccionada);
     return mascota ? mascota.nombre : '';
   }
-  
+
   crearDatosAnuncio(response: any, categoriaNombre: string, nombreMascota: string) {
     return {
       id: response.data.id,
@@ -148,14 +211,14 @@ export class AnuncioFormComponent implements OnInit {
       lng: this.position.longitude
     };
   }
-  
+
   handleError(error: any) {
     this.errorMessage = error.error.message;
     this.botonDeshabilitado = false;
     this.cdr.detectChanges();
     console.error('Error:', error);
   }
-  
+
   resetForm() {
     this.botonDeshabilitado = false;
     this.position = {
@@ -163,8 +226,8 @@ export class AnuncioFormComponent implements OnInit {
       longitude: 0
     };
   }
-  
-  
-  
+
+
+
 
 }

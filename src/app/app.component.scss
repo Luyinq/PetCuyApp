@@ -35,4 +35,22 @@ body {
     cursor: pointer;
   }
   
+  .custom-toolbar {
+    --background: #5ab1d9;
+    --color: #1a4c75;
+  }
   
+  .ion-header {
+    background-color: #5ab1d9;
+   }
+
+
+   ion-toolbar {
+    --background: #5ab1d9; // Cambia este valor al color deseado
+    --background-color: #5ab1d9; // Cambia este valor al color deseado
+
+  }
+
+  toolbar-background {
+    --background-color: #5ab1d9; // Cambia este valor al color deseado
+  }

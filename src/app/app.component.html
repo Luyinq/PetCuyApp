@@ -97,10 +97,10 @@
   <ion-header *ngIf="showMenu">
     <ion-toolbar class="ion-toolbar-fondo">
       <ion-buttons slot="start">
-        <ion-menu-button class="custom-menu-button" style="color: #1a4c75; background: #5ab1d9;" ></ion-menu-button>
+        <ion-menu-button class="custom-menu-button" style="color: #1a4c75; background: #5ab1d9;"></ion-menu-button>
       </ion-buttons>
-      <div class="logo-container">
-        <img  style="margin-left: -10%" class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+      <div class="logo-container" [style.--size]="size">
+        <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
       </div>
       <ion-buttons slot="end" *ngIf="isHomePage()">
         <ion-button style="color: #1a4c75; background: #5ab1d9;" (click)="reloadPage()">
@@ -111,7 +111,8 @@
   </ion-header>
   <ion-content class="ion-padding">
     <ion-router-outlet></ion-router-outlet>
-  </ion-content>
+  </ion-content> 
 </div>
+
   
 </ion-app>

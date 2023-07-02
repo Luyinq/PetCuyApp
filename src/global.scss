@@ -32,21 +32,22 @@
 }*/
 
 #passwordEye {
-    position: absolute; 
-    right: 5px; 
-    top: 50%; 
-    transform: translateY(-50%);
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.loginForm{
-    margin-top: -50px;
+.loginForm {
+  margin-top: -50px;
 }
 
-.password{
-    margin-top: 10px;
+.password {
+  margin-top: 10px;
 }
 
-.olvidePass, .registrate {
+.olvidePass,
+.registrate {
   width: 100%;
   text-align: center;
 }
@@ -62,81 +63,92 @@
 }
 
 .crearCuenta {
-    padding-left: 70px; 
-    border: none !important;
-    box-shadow: none !important;
-    margin-top: 10px; //con esto pude acortar la distancia entre dos elementos ion-item
+  padding-left: 70px;
+  border: none !important;
+  box-shadow: none !important;
+  margin-top: 10px; //con esto pude acortar la distancia entre dos elementos ion-item
 
-  }
+}
 
-.ion-label, p {
-    text-transform: uppercase;
-  }
-
+.ion-label,
+p {
+  text-transform: uppercase;
+}
 
 
 .logo-container {
-    width: 100%; 
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #5ab1d9;
-    border: transparent;
-  }
+  /* Ajusta este valor según el espacio ocupado por el botón del menú */
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #5ab1d9;
+  border: transparent;
   
-  .logo-container img {
-    max-width: 250%;
-    max-height: 250%;
-    padding-top: 14px;
-    position: fixed;
-    background-color: transparent;
-    
-  }
+  width: calc(100% - var(--size));
+
+}
+
+
+ion-toolbar {
+  --background: #5ab1d9; // Cambia este valor al color deseado
+  --background-color: #5ab1d9; // Cambia este valor al color deseado
+  color: white;
+}
+
+
+.logo-container img {
+  max-width: 250%;
+  max-height: 250%;
+  padding-top: 14px;
+  position: fixed;
+  background-color: transparent;
+}
 
 .transparent-button {
 
-    --background: rgba(70, 193, 202, 0.445);
-    --color: #002d4b;
-    --border-color: rgb(23, 102, 155);
-    font-weight: bold;
-  
-  }
+  --background: rgba(70, 193, 202, 0.445);
+  --color: #002d4b;
+  --border-color: rgb(23, 102, 155);
+  font-weight: bold;
+
+}
 
 .box-container {
-    background-color: #aee1ff9f;
-    border: 1px solid #d2f8f3d2;
-    padding: 10px;
-    border-radius: 5%;
-    width: 99%;
-    margin-top: -30px;
-  
-  }
+  background-color: #aee1ff9f;
+  border: 1px solid #d2f8f3d2;
+  padding: 10px;
+  border-radius: 5%;
+  width: 99%;
+  margin-top: -30px;
+
+}
 
 .center-container {
-    height: 100vh;
-    padding-left: 5px;
-  }
+  height: 100vh;
+  padding-left: 5px;
+}
 
 
 
 .full-width-text {
-    width: 200%;
-    margin: 0;
-  }
-  
-.itemRut{
+  width: 200%;
+  margin: 0;
+}
+
+.itemRut {
   padding-top: 40px;
 }
 
-.ion-toolbar-fondo{
+.ion-toolbar-fondo {
   --border-color: #5ab1d9;
   --border-width: none;
-} 
+}
 
-.registerForm{
+.registerForm {
   width: 100%;
-  ion-item{
+
+  ion-item {
     color: #217E94;
     margin-top: 15px;
   }
@@ -163,15 +175,15 @@
     max-height: 100%;
   }
 
-  
+
 }
 
 .ion-content-profile {
   --background: #ffffff; //COLOR DE FONDO DE PAGES
 }
 
-.user-info-card{
-  ion-item{
+.user-info-card {
+  ion-item {
     color: #217E94;
     margin-top: 15px;
   }
@@ -185,16 +197,20 @@
 }
 
 .user-info-card {
-  ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
   }
 }
 
-.ion-content-resetpass{
+.ion-content-resetpass {
   --background: #ffffff;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
 .resetpass-button {
@@ -206,42 +222,52 @@
 
 }
 
-.ion-content-edit{
+.ion-content-edit {
   --background: #ffffff;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
-.ion-content-anuncio{
+.ion-content-anuncio {
   --background: #fdfdfd;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
-.ion-content-misanuncios{
+.ion-content-misanuncios {
   --background: #fafafa;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
-.ion-content-mispets{
+.ion-content-mispets {
   --background: #ffffff;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
-.ion-content-mascotaedit{
+.ion-content-mascotaedit {
   --background: #ffffff;
-    ion-item, ion-label {
+
+  ion-item,
+  ion-label {
     --ion-background-color: transparent;
-    }
+  }
 }
 
-.ion-item-peteditform{
+.ion-item-peteditform {
   width: 100%;
   height: 50%;
   display: flex;
@@ -250,9 +276,10 @@
   padding-left: 40px;
 
   ion-button {
-  width: 190%;
-  height: 300%;
+    width: 190%;
+    height: 300%;
   }
+
   ion-button img {
     padding-top: 5px;
     max-width: 100%;
@@ -260,6 +287,5 @@
   }
 
 }
-
 
 
