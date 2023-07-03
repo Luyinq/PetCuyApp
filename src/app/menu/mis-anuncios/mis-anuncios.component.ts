@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ChangeDetectorRef } from '@angular/core';
+import { PubnubService } from 'src/app/shared/pubnub.service';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class MisAnunciosComponent  implements OnInit {
 
 
 
-  constructor(private api: ApiService, public datePipe: DatePipe, private router: Router, private alertController: AlertController, private cdr: ChangeDetectorRef) { }
+  constructor(private pubnubService: PubnubService, private api: ApiService, public datePipe: DatePipe, private router: Router, private alertController: AlertController, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {}
 
@@ -118,6 +119,11 @@ export class MisAnunciosComponent  implements OnInit {
           handler: async () => {
             try {
               await this.api.deleteAnuncio(id);
+              let message = {
+                id: id
+              }
+              const messageJSON = JSON.stringify(message);
+              this.pubnubService.sendMessage("Eliminar", messageJSON)
               this.anunciosBuscar = this.anunciosBuscar.filter((anuncio : any) => anuncio.id !== id); // Elimina el anuncio de la lista
               this.anunciosAdoptar = this.anunciosAdoptar.filter((anuncio : any) => anuncio.id !== id); // Elimina el anuncio de la lista
               this.cdr.detectChanges();

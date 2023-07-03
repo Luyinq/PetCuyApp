@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/shared/api.service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { PubnubService } from 'src/app/shared/pubnub.service';
 
 @Component({
   selector: 'app-mis-mascotas',
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
 export class MisMascotasComponent implements OnInit {
   pets!: any[]; // Define the property to hold pet data
 
-  constructor(private api: ApiService, private alertController: AlertController, private router : Router) {}
+  constructor(private pubnubService: PubnubService ,private api: ApiService, private alertController: AlertController, private router : Router) {}
 
   ngOnInit() {}
 
@@ -46,7 +47,12 @@ export class MisMascotasComponent implements OnInit {
           handler: () => {
             this.api.deletePet(pet.id).then(
               () => {
+                let message = {
+                  id: pet.id
+                }
+                const messageJSON = JSON.stringify(message);
                 this.api.presentToast("Mascota eliminada")
+                this.pubnubService.sendMessage("Eliminar", messageJSON)
                 // Actualizar la lista de mascotas después de eliminar la mascota
                 this.pets = this.pets.filter((p) => p.id !== pet.id);
               },

@@ -13,8 +13,7 @@ import {
   PushNotifications,
   Token,
 } from '@capacitor/push-notifications';
-
-
+import { PubnubService } from '../shared/pubnub.service';
 
 @Component({
   selector: 'app-home',
@@ -37,6 +36,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   isHomePage: boolean = false;
   markerPopup: any;
   allmarkersInfo: {
+    markerId: any,
     id: number;
     nombre: string;
     lat: number;
@@ -44,20 +44,16 @@ export class HomePage implements AfterViewInit, OnDestroy {
     foto: string;
   }[] = [];
   circles: any[] = [];
+  markerIds: string[] = []; // Define markerIds as an array of strings
+  circlesIds: string[] = []; // Define markerIds as an array of strings
+  currentCity: string = '';
   currentPositionSubscription: any;
   gotoAnuncioButton: boolean = false;
   selectedAnnouncementId: number | null = null;
   styles = [
     {
-      "elementType": "labels",
-      "stylers": [
-        {
-          "visibility": "on" //ESTO CAMBIE PARA QUE SEA VEAN LOS NOMBRES DE LAS CALLES Y otras weas
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.land_parcel",
+      "featureType": "administrative",
+      "elementType": "geometry",
       "stylers": [
         {
           "visibility": "off"
@@ -65,7 +61,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       ]
     },
     {
-      "featureType": "administrative.neighborhood",
+      "featureType": "poi",
       "stylers": [
         {
           "visibility": "off"
@@ -73,84 +69,25 @@ export class HomePage implements AfterViewInit, OnDestroy {
       ]
     },
     {
-      featureType: 'water',
-      elementType: 'geometry.fill',
-      stylers: [
+      "featureType": "road",
+      "elementType": "labels.icon",
+      "stylers": [
         {
-          color: '#73C8FA'
+          "visibility": "off"
         }
       ]
     },
     {
-      featureType: 'landscape',
-      elementType: 'geometry.fill',
-      stylers: [
+      "featureType": "transit",
+      "stylers": [
         {
-          color: '#F2F2F2'
-        }
-      ]
-    },
-    {
-      featureType: 'road.highway',
-      elementType: 'geometry.stroke',
-      stylers: [
-        {
-          color: '#85A2BF'
-        },
-        {
-          weight: 1.5
-        }
-      ]
-    },
-    {
-      featureType: 'road.highway',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#D8E6F3'
-        }
-      ]
-    },
-    {
-      featureType: 'road.local',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#9EB6C8'
-        }
-      ]
-    },
-    {
-      featureType: 'poi',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#F2F2F2',
-          visibility: "off"
-        }
-      ]
-    },
-    {
-      featureType: 'poi.park',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#D9D9D9'
-        }
-      ]
-    },
-    {
-      featureType: 'transit',
-      elementType: 'geometry.fill',
-      stylers: [
-        {
-          color: '#F2F2F2'
+          "visibility": "off"
         }
       ]
     }
   ]
-
-  constructor(private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
+   
+  constructor(private pubnubService: PubnubService, private cdr: ChangeDetectorRef, private main: AppComponent, private router: Router, private api: ApiService, private alertController: AlertController) {
     const nombre = localStorage.getItem('nombre');
     this.main.nombre = nombre !== null ? nombre : '';
 
@@ -160,7 +97,42 @@ export class HomePage implements AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+   ngOnInit() {
+    console.log('==============')
+    this.pubnubService.getUuid();
+    console.log('==============')
+    console.log('==============')
+    const listener = {
+      status: (statusEvent: { category: string }) => {
+        if (statusEvent.category === "PNConnectedCategory") {
+          console.log("Connected");
+        }
+      },
+      message: async (message: any) => {
+        console.log(message);
+        if (message.message.tipo === "Agregar") {
+          let data;
+          try {
+            data = JSON.parse(message.message.data);
+            console.log("datos", data);
+            this.insertMarker(data);
+          } catch (error) {
+            console.error("Error al analizar el mensaje JSON:", error);
+          }
+        }
+        if (message.message.tipo === "Eliminar"){
+          await this.removeAllMarkers();
+          await this.insertMarkersFromAPI();
+          this.cdr.detectChanges();
+        }
+      },
+    };
+    
+    this.pubnubService.pubnub.addListener(listener);
+    this.pubnubService.pubnub.subscribe({
+      channels: ["Map"]
+    });
+
     this.subscribeToRouterEvents();
   }
 
@@ -172,7 +144,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   subscribeToRouterEvents() {
-    this.routerSubscription = this.router.events.subscribe((event) => {
+    this.routerSubscription = this.router.events.subscribe( (event) => {
       if (event instanceof NavigationEnd) {
         this.isHomePage = (event.urlAfterRedirects === '/home');
         if (!this.isHomePage) {
@@ -180,8 +152,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
         } else {
           this.createMap(); // Recreate the map when navigating back to the page
           this.startTrackingPosition();
-          console.log('Initializing HomePage');
-
           // Request permission to use push notifications
           // iOS will prompt user and return if they granted permission or not
           // Android will just grant without prompting
@@ -284,16 +254,11 @@ export class HomePage implements AfterViewInit, OnDestroy {
     return null;
   }
 
-
-
-
   unsubscribeFromRouterEvents() {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
   }
-
-
 
   destroyMap() {
     console.log("borrando");
@@ -316,6 +281,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   async createMap() {
+    this.api.showLoading();
     const center = await this.getCurrentPosition();
     this.newMap = await GoogleMap.create({
       id: 'home-google-map',
@@ -333,6 +299,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     await this.newMap.enableTrafficLayer(false);
     await this.newMap.enableCurrentLocation(true);
     await this.insertMarkersFromAPI(); // Insertar marcadores desde la API
+    this.api.dismissLoading();
   }
 
   async addMarker(lat: number, lng: number) {
@@ -405,20 +372,29 @@ export class HomePage implements AfterViewInit, OnDestroy {
     }
   }
 
+  async removeAllMarkers() {
+    await this.newMap.removeMarkers(this.markerIds);
+    await this.newMap.removeCircles(this.circlesIds);
+  }
+  
+  
+
   async insertMarkersFromAPI() {
+    this.markerIds = [];
+    this.circlesIds = [];
     const markers = await this.api.getAnuncios();
     const tiposAnuncio = await this.api.listTipoAnuncio();
     this.circles = [];
     this.allmarkersInfo = [];
   
-    markers.forEach(async (marker) => {
-      if (!marker.isDeleted) { // Verificar si el anuncio no está eliminado
+    const markerPromises = markers.map(async (marker) => {
+      if (!marker.isDeleted) {
         const lat = parseFloat(marker.posicion.latitud);
         const lng = parseFloat(marker.posicion.longitud);
         const tipo = tiposAnuncio.find((tipo) => tipo.id === marker.tipo);
         const tipoNombre = tipo ? tipo.nombre : '';
-  
-        await this.newMap.addMarker({
+
+        const markerId = await this.newMap.addMarker({
           coordinate: {
             lat: lat,
             lng: lng,
@@ -436,7 +412,11 @@ export class HomePage implements AfterViewInit, OnDestroy {
           snippet: marker.descripcion,
         });
   
+        this.markerIds.push(markerId); // Agregar markerId al array markerIds
+
+
         this.allmarkersInfo.push({
+          markerId : markerId,
           id: marker.id,
           nombre: marker.mascota.nombre,
           lat: lat,
@@ -448,23 +428,31 @@ export class HomePage implements AfterViewInit, OnDestroy {
           {
             center: { lat: lat, lng: lng },
             radius: 100,
-            fillColor: 'yellow',
+            fillColor: '#00FFFF',
             fillOpacity: 0.2,
-            strokeColor: 'yellow',
-            strokeWeight: 5,
+            strokeColor: '#00FFFF',
+            strokeWeight: 3,
             clickable: false
           }
         ];
   
         this.circles.push(...circles);
   
-        await this.newMap.addCircles(circles);
+        const circleId = await this.newMap.addCircles(circles);
+
+        this.circlesIds.push(...circleId); // Use the spread operator (...) to push individual elements from the circleId array into circlesIds
+
       }
     });
+  
+    await Promise.all(markerPromises);
+  
+    console.log("===========================MARCADORES=======================")
+    console.log(this.allmarkersInfo)
+    console.log(this.markerIds)
+    console.log(this.circles)
   }
-  
-  
-  
+
 
   gotoCrearAnuncio() {
     const queryParams = {
@@ -537,11 +525,61 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     }
   }
-
+  
   gotoAnuncio(anuncioId: number | null) {
     this.router.navigate(['/anuncio'], { queryParams: { id: anuncioId } });
     anuncioId = null;
   }
 
+
+  async insertMarker(marker: any) {
+    const lat = parseFloat(marker.lat);
+    const lng = parseFloat(marker.lng);
+  
+    const markerId = await this.newMap.addMarker({
+      coordinate: {
+        lat: lat,
+        lng: lng,
+      },
+      draggable: false,
+      title: marker.categoria + " - " + marker.mascota,
+      iconAnchor: {
+        x: 50,
+        y: 50
+      },
+      snippet: marker.descripcion,
+    });
+
+    this.markerIds.push(markerId); // Agregar markerId al array markerIds
+
+  
+    this.allmarkersInfo.push({
+      markerId : markerId,
+      id: marker.id,
+      nombre: marker.mascota,
+      lat: lat,
+      lng: lng,
+      foto: ''
+    });
+  
+    const circles = [
+      {
+        center: { lat: lat, lng: lng },
+        radius: 100,
+        fillColor: '#00FFFF',
+        fillOpacity: 0.2,
+        strokeColor: '#00FFFF',
+        strokeWeight: 3,
+        clickable: false
+      }
+    ];
+  
+    this.circles.push(...circles);
+  
+    const circleId = await this.newMap.addCircles(circles);
+
+    this.circlesIds.push(...circleId); // Use the spread operator (...) to push individual elements from the circleId array into circlesIds
+  }
+  
 
 }

@@ -5,3 +5,52 @@ ion-content {
 body {
     background: transparent;
 }
+
+.avatar-container {
+    position: relative;
+  }
+  
+  .avatar-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .avatar-container:hover .avatar-overlay {
+    opacity: 1;
+  }
+  
+  .edit-icon {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .custom-toolbar {
+    --background: #5ab1d9;
+    --color: #1a4c75;
+  }
+  
+  .ion-header {
+    background-color: #5ab1d9;
+   }
+
+
+   ion-toolbar {
+    --background: #5ab1d9; // Cambia este valor al color deseado
+    --background-color: #5ab1d9; // Cambia este valor al color deseado
+
+  }
+
+  toolbar-background {
+    --background-color: #5ab1d9; // Cambia este valor al color deseado
+  }
