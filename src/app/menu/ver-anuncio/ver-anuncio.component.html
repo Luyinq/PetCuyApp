@@ -51,7 +51,11 @@
   </ion-card>
 
   <ion-button *ngIf="!loading && checkContacto()" (click)="gotoPerfil()" expand="full">Ir al Perfil</ion-button>  
-  <ion-button *ngIf="!loading && checkContactoEmpty() && !checkAutor()" (click)="generateContacto()" expand="full">Contactar al autor</ion-button>  
+  <ion-button *ngIf="!loading && checkContactoEmpty() && !checkAutor()" (click)="generateContacto()" expand="full">Contactar al autor</ion-button>
+    <ion-button  *ngIf="!loading && !checkAutor()" style="margin-top:5%; --background: #f33131" expand="full" (click)="showReportDialog()" class="report-button">
+      Reportar anuncio
+    </ion-button>
+
 
   <ion-card *ngIf="!anuncioData">
     <ion-text class="no-anuncio-text">No se encontró el anuncio</ion-text>
