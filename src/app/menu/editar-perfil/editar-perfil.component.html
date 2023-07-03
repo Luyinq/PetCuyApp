@@ -1,25 +1,28 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Editar perfil</ion-title>
+    <ion-title class="ion-text-center">Editar perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-content-edit">
   <form [formGroup]="updateForm" (ngSubmit)="submitForm()">
+    <br>
     <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input formControlName="nombre" required></ion-input>
+      <ion-label position="floating" style="color: #217E94; font-weight: bold">Nombre</ion-label>
+      <ion-input style="color: #217E94;" formControlName="nombre" required></ion-input>
     </ion-item>
-    <ion-text color="danger" *ngIf="updateForm.get('nombre')?.invalid && updateForm.get('nombre')?.touched">
+    <ion-text  color="danger" *ngIf="updateForm.get('nombre')?.invalid && updateForm.get('nombre')?.touched">
       <div>{{ getErrorMessage('nombre') }}</div>
     </ion-text>
     <ion-text color="danger" *ngIf="nombrePutError">
       <div>{{ nombrePutError }}</div>
     </ion-text>
 
+    <br>
+
     <ion-item>
-      <ion-label position="floating">Apellido</ion-label>
-      <ion-input formControlName="apellido" required></ion-input>
+      <ion-label position="floating" style="color: #217E94; font-weight: bold">Apellido</ion-label>
+      <ion-input style="color: #217E94;" formControlName="apellido" required></ion-input>
     </ion-item>
     <ion-text color="danger" *ngIf="updateForm.get('apellido')?.invalid && updateForm.get('apellido')?.touched">
       <div>{{ getErrorMessage('apellido') }}</div>
@@ -28,20 +31,24 @@
       <div>{{ apellidoPutError }}</div>
     </ion-text>
     
+    <br>
+
     <ion-item>
-      <ion-label position="floating">Correo</ion-label>
-      <ion-input type="email" formControlName="correo" required></ion-input>
+      <ion-label position="floating" style="color: #217E94; font-weight: bold">Correo</ion-label>
+      <ion-input style="color: #217E94;" type="email" formControlName="correo" required></ion-input>
     </ion-item>
     <ion-text color="danger" *ngIf="updateForm.get('correo')?.invalid && updateForm.get('correo')?.touched">
       <div>{{ getErrorMessage('correo') }}</div>
     </ion-text>
-    <ion-text color="danger" *ngIf="correoPutError">
+    <ion-text style="color: #217E94;" color="danger" *ngIf="correoPutError">
       <div>{{ correoPutError }}</div>
     </ion-text>
 
+    <br>
+
     <ion-item>
-      <ion-label position="floating">Celular</ion-label>
-      <ion-input type="number" formControlName="celular"></ion-input>
+      <ion-label position="floating" style="color: #217E94; font-weight: bold">Celular</ion-label>
+      <ion-input style="color: #217E94" type="number" formControlName="celular"></ion-input>
     </ion-item>
     <ion-text color="danger" *ngIf="updateForm.get('celular')?.invalid && updateForm.get('celular')?.touched">
       <div>{{ getErrorMessage('celular') }}</div>
@@ -49,10 +56,7 @@
     <ion-text color="danger" *ngIf="celularPutError">
       <div>{{ celularPutError }}</div>
     </ion-text>
-
-
-
-    <ion-button type="submit" expand="block" [disabled]="updateForm.invalid">
+    <ion-button class="sticky-button" type="submit" expand="block" [disabled]="updateForm.invalid">
       Guardar cambios
     </ion-button>
   </form>

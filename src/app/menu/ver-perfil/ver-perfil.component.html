@@ -1,13 +1,37 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="transparent-background" style="    --background: #5ab1d9; 
+  --background-color: #5ab1d9; ">
     <ion-title class="ion-text-center">Perfil del usuario</ion-title>
   </ion-toolbar>
 </ion-header>
+ 
 
-<ion-content>
-  <ion-card *ngIf="usuario" class="user-profile-card">
+<ion-content class="ion-content-profile">
+  <ion-card *ngIf="usuario" class="user-profile-card" style="background-color: transparent; padding-top: 10px">
+
     <ion-card-header>
+      <div class="profile-rating">
+        <ion-icon name="star" class="star-icon" style="font-size: 20px; color: #f5c301;"></ion-icon>
+        <div class="rating-content" *ngIf="tieneReputacion">
+          <span class="average-rating">{{ repPromedio }} / {{ repTotales }}</span>
+        </div>
+        <div class="no-reputation-message" *ngIf="!tieneReputacion">
+          -/-
+        </div>
+      </div>
+
+      <div class="star-rating" *ngIf="storedRut != usuario.rut && canVote">
+        <ion-icon
+          *ngFor="let star of stars"
+          [name]="star.isActive ? 'star' : 'star-outline'"
+          class="star-icon"
+          (click)="rate(star.value)"
+        ></ion-icon>
+      </div>
     </ion-card-header>
+    
+    
+
     <ion-card-content>
       <div class="profile-picture">
         <ion-avatar class="avatar-circle">
@@ -21,27 +45,26 @@
       </ng-template>
     </ion-card-content>
   </ion-card>
-
   <ion-card *ngIf="usuario" class="user-info-card">
     <ion-card-header class="ion-text-center">
-      <ion-card-title>Información del usuario</ion-card-title>
+      <ion-card-title style="font-style: bold; color: #217E94;">Información del usuario</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
         <ion-label>Nombre:</ion-label>
-        <ion-note slot="end">{{ usuario.nombre }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.nombre }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Apellido:</ion-label>
-        <ion-note slot="end">{{ usuario.apellido }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.apellido }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Celular:</ion-label>
-        <ion-note slot="end">+56{{ usuario.celular }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">+56{{ usuario.celular }}</ion-note>
       </ion-item>
       <ion-item>
         <ion-label>Correo:</ion-label>
-        <ion-note slot="end">{{ usuario.correo }}</ion-note>
+        <ion-note style="color: #217E94;" slot="end">{{ usuario.correo }}</ion-note>
       </ion-item>
     </ion-card-content>
   </ion-card>
@@ -54,7 +77,7 @@
     </ion-card>
   </div>
 
-  <ion-footer *ngIf="usuario">
+  <ion-footer *ngIf="usuario && storedRut != usuario.rut">
     <ion-toolbar>
       <ion-button expand="full" href="https://wa.me/+56{{usuario.celular}}?text=¡Hola! Te hablo desde PetCuy." class="whatsapp-button" *ngIf="usuario.celular.toString() !== storedCelular">
         <ion-icon slot="icon-only" name="logo-whatsapp" class="whatsapp-icon"></ion-icon>
@@ -62,10 +85,17 @@
     </ion-toolbar>
   </ion-footer>
   
-  <ion-footer *ngIf="usuario">
+  <ion-footer *ngIf="usuario && storedRut != usuario.rut">
     <ion-toolbar>
       <ion-button expand="full" href="mailto:{{usuario.correo}}?subject=Asunto del correo&body=¡Hola! Te escribo desde PetCuy." class="email-button" *ngIf="usuario.correo !== storedCorreo">
         <ion-icon slot="icon-only" name="mail" class="email-icon"></ion-icon>
       </ion-button>
     </ion-toolbar>
   </ion-footer>
+
+  <ion-footer *ngIf="usuario && storedRut != usuario.rut">
+    <ion-button expand="full" (click)="showReportDialog()" class="report-button">
+      Reportar usuario
+    </ion-button>
+  </ion-footer>
+

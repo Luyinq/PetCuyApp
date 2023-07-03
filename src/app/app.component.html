@@ -1,18 +1,23 @@
+
 <ion-app>
 <ion-menu *ngIf="showMenu"  contentId="main-content">
   <ion-header>
     <ion-toolbar>
       <ion-item>
-        <ion-avatar slot="start" (click)="avatarClicked()">
-          <img alt="Silhouette of a person's head" src={{profilePic}} />
+        <ion-avatar slot="start" (click)="avatarClicked()" class="avatar-container">
+          <img alt="Silhouette of a person's head" src="{{ profilePic }}" />
+          <div class="avatar-overlay">
+            <ion-icon name="pencil" class="edit-icon"></ion-icon>
+          </div>
         </ion-avatar>
-        <input type="file" style="display: none" #fileInput (change)="uploadImage($event)">
+        <input type="file" #fileInput style="display: none" (change)="uploadImage($event)" />
         <ion-label>
-          Bienvenido, {{nombre}}
+          Bienvenido, {{ nombre }}
         </ion-label>
       </ion-item>
     </ion-toolbar>
   </ion-header>
+    
 
 
   <ion-content>
@@ -66,21 +71,9 @@
 </ion-item>
 
 <div *ngIf="showAdminOptions">
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 1</ion-label>
-    </ion-item>
-  </ion-menu-toggle>
-
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 2</ion-label>
-    </ion-item>
-  </ion-menu-toggle>
-
-  <ion-menu-toggle>
-    <ion-item>
-      <ion-label>Subitem 3</ion-label>
+  <ion-menu-toggle *ngFor="let item of jsonItems; let i = index">
+    <ion-item (click)="redirigirEntidad(i)">
+      <ion-label>{{ item.key }}</ion-label>
     </ion-item>
   </ion-menu-toggle>
 </div>
@@ -100,20 +93,26 @@
 
 </ion-menu>
 
-
-
 <div class="ion-page" id="main-content">
   <ion-header *ngIf="showMenu">
-    <ion-toolbar>
+    <ion-toolbar class="ion-toolbar-fondo">
       <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
+        <ion-menu-button class="custom-menu-button" style="color: #1a4c75; background: #5ab1d9;"></ion-menu-button>
       </ion-buttons>
-      <ion-title>Pet Cuy</ion-title>
+      <div class="logo-container" [style.--size]="size">
+        <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
+      </div>
+      <ion-buttons slot="end" *ngIf="isHomePage()">
+        <ion-button style="color: #1a4c75; background: #5ab1d9;" (click)="reloadPage()">
+          <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
   <ion-content class="ion-padding">
     <ion-router-outlet></ion-router-outlet>
-  </ion-content>
+  </ion-content> 
 </div>
+
   
 </ion-app>
