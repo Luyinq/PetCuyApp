@@ -72,11 +72,15 @@
 
 <div *ngIf="showAdminOptions">
   <ion-menu-toggle *ngFor="let item of jsonItems; let i = index">
-    <ion-item (click)="redirigirEntidad(i)">
-      <ion-label>{{ item.key }}</ion-label>
-    </ion-item>
+    <ng-container *ngIf="!isExcludedProperty(item.key)">
+      <ion-item (click)="redirigirEntidad(i)">
+        <ion-label>{{ item.key }}</ion-label>
+      </ion-item>
+    </ng-container>
   </ion-menu-toggle>
 </div>
+
+
 </div>
 
 

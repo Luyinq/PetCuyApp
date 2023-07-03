@@ -135,7 +135,10 @@ export class AppComponent implements OnInit {
     console.log(entidadClickeada);
     this.router.navigate(['/admin', entidadClickeada]);
   }
-
+  isExcludedProperty(property: string): boolean {
+    const excludedProperties = ['posicion', 'reporte', 'recompensa', 'reputacion'];
+    return excludedProperties.includes(property);
+  }
 
   updateMenuAndProfilePic() {
     this.showMenu = !!this.localStorage.getItem('rut');
