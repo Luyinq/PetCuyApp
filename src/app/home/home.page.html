@@ -1,4 +1,5 @@
 <capacitor-google-map #map *ngIf="isHomePage" [fullscreen]="true"></capacitor-google-map>
+
 <ion-footer class="ion-footer-button" *ngIf="gotoAnuncioButton">
     <ion-button class="ion-button-lupa" *ngIf="gotoAnuncioButton" (click)="gotoAnuncio(selectedAnnouncementId)" fill="clear" fill="outlined">
       VER ANUNCIO
@@ -9,3 +10,4 @@
       <img src="../../assets/imagenes/lupaboton.png" alt="Boton Lupa">
     </ion-button>
 </ion-footer>
+

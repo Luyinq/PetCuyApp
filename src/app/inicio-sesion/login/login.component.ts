@@ -53,6 +53,7 @@ export class LoginComponent  implements OnInit {
 
   submitForm() {
     if (this.forgotForm && this.forgotForm.valid) {
+      this.api.showLoading();
       const rutControl = this.forgotForm.get('rut');
       const passwordControl = this.forgotForm.get('password');
       if (rutControl && passwordControl) {
@@ -74,11 +75,14 @@ export class LoginComponent  implements OnInit {
               this.api.presentToast(response.message);
               this.main.showMenu = true;
               this.main.ngOnInit();
+              this.api.dismissLoading();
               this.router.navigate(['/home']);
             } else {
+              this.api.dismissLoading();
               this.api.presentToast(response.message);
             }
           }, (error: any) => {
+            this.api.dismissLoading();
             this.api.presentToast(error.error.message);
           });
       }

@@ -153,6 +153,7 @@ export class RegistroComponent implements OnInit {
   submitForm() {
     if (this.registerForm && this.registerForm.valid) {
       const rutControl = this.registerForm.get('rut');
+      console.log(rutControl)
       const nomControl = this.registerForm.get('nombre');
       const apeControl = this.registerForm.get('apellido');
       const passControl = this.registerForm.get('password');

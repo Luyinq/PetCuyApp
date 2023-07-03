@@ -1,15 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar class="ion-toolbar-fondo">
-    <ion-buttons slot="start">
-      <ion-back-button style="color: #1a4c75; background: #5ab1d9;"></ion-back-button>
-    </ion-buttons>
     <div class="logo-container">
       <img class="titulopng" src="../../../assets/imagenes/logopng.png" alt="Logo Png">
     </div>
   </ion-toolbar>
 </ion-header>
 
-  
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">Recuperar contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
   <ion-content [fullscreen]="true" class="ion-content-fondo">
     <ion-img style="padding-left: 6%;" src="/assets/imagenes/logoweno.png"></ion-img>
     <div id="container">
@@ -33,7 +35,10 @@
             </ion-text>
           <ion-row>
             <ion-col>
-            <ion-button class="transparent-button" style="padding-left: 130px; padding-top: 10px" type="submit" [disabled]="forgotForm.invalid">Enviar</ion-button>
+              <div style="  display: flex;
+              justify-content: center;
+              align-items: center;">
+            <ion-button class="transparent-button" type="submit" [disabled]="forgotForm.invalid">Enviar</ion-button></div>
             </ion-col>
           </ion-row>
         </form>

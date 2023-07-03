@@ -158,7 +158,7 @@ export class ApiService {
   getMyPets(): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
       const rut = localStorage.getItem('rut');
-      const url = `https://luyinq.pythonanywhere.com/mascota/?dueno=${rut}/`;
+      const url = `https://luyinq.pythonanywhere.com/mascota/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
@@ -393,7 +393,7 @@ export class ApiService {
 
   async getAnunciosByRut(rut: string): Promise<any[]> {
     return new Promise<any[]>((resolve, reject) => {
-      const url = `https://luyinq.pythonanywhere.com/anuncio/?autor=${rut}/`;
+      const url = `https://luyinq.pythonanywhere.com/anuncio/`;
       const headers = new HttpHeaders({
         'Authorization': 'Token ' + localStorage.getItem('token')
       });
