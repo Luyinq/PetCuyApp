@@ -242,7 +242,7 @@
       </div>
     </div>
    
-    <img [src]="entidad.foto_1" alt="Foto de mascota" class="img-mascota">
+    <img [src]="entidad.foto_1" alt="Foto de mascota" class="img-mascota" style="width: 60%;">
     <div class="button-container">
       <div class="button-row">
       <ion-button type="submit" shape="round" color="primary"><ion-icon slot="icon-only" name="save-outline" class="icono"></ion-icon></ion-button>
@@ -281,7 +281,7 @@
                 <ion-label>Autor:</ion-label>
               </div>
               <div class="input-column">
-                <ion-label style="font-weight:initial;">{{ entidad.autor }}</ion-label>
+                <ion-input style="font-weight:initial;">{{ entidad.autor }}</ion-input>
               </div>
             </div>
             <div class="data-container" style="padding-bottom: 10px;">
@@ -301,11 +301,11 @@
               </div>
             </div>
             <div class="data-container" style="padding-bottom: 10px;">
-              <div class="label-column">
+              <div class="label-column" style="align-self: flex-start;">
                 <ion-label>Descripcion:</ion-label>
               </div>
               <div class="input-column">
-                <ion-label style="font-weight:initial;">{{ entidad.descripcion }}</ion-label>
+                <ion-input style="font-weight:initial;" [readonly]="true" multiline>{{ entidad.descripcion }}</ion-input>
               </div>
             </div>
             <div class="data-container" style="padding-bottom: 10px;">
